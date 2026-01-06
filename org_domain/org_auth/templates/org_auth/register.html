@@ -1,0 +1,112 @@
+{% extends 'base.html' %} 
+{% block title %} Login Page {% endblock %} 
+{% block content %} 
+<main> 
+    <div class=" bg-black min-h-screen flex items-center justify-center border-2 border-gray-300 border"> 
+        <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-8 border-1 border-blue-700 border"> 
+            
+            <!-- Header --> 
+            <div class="text-center mb-8"> 
+                <h1 class="text-4xl font-extrabold text-green-600 mb-2">
+                    Welcome👋
+                </h1> 
+                <p class="text-white">
+                    Create Your Own Gym Account
+                </p> 
+            </div> 
+            
+            <!-- Login Form --> 
+            <form method="post" action="" class="space-y-6" enctype="multipart/form-data"> 
+                {% csrf_token %} 
+
+                <!-- Owner First Name --> 
+                <div> 
+                    <label class="block text-sm font-semibold text-white mb-1">
+                        Owner First Name
+                    </label> 
+                    <input type="text" 
+                    name="ownerfirstname" 
+                    placeholder="Owner First Name" 
+                    required class="w-full px-4 py-3 text-white placeholder:text-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div> 
+
+                <!-- Owner Last Name --> 
+                <div> 
+                    <label class="block text-sm font-semibold text-white mb-1">
+                        Owner Last Name
+                    </label> 
+                    <input type="text" 
+                    name="ownerlastname" 
+                    placeholder="Owner Last Name" 
+                    required class="w-full px-4 py-3 text-white placeholder:text-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <!-- Email --> 
+                <div> 
+                    <label class="block text-sm font-semibold text-white mb-1">
+                        Email
+                    </label> 
+                    <input type="text" 
+                    name="email" 
+                    placeholder="Email" 
+                    required class="w-full px-4 py-3 text-white placeholder:text-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+
+                <!-- Gym Name --> 
+                <div> 
+                    <label class="block text-sm font-semibold text-white mb-1">
+                        Gym Name
+                    </label> 
+                    <input type="text" 
+                    name="orgname" 
+                    placeholder="Gym Name" 
+                    required class="w-full px-4 py-3 text-white placeholder:text-white rounded-lg border border-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div> 
+                
+                <!-- Password --> 
+                <div> 
+                    <label class="block text-sm font-semibold text-white mb-1">
+                        Password
+                    </label> 
+                    <input type="password" 
+                    name="password" 
+                    placeholder="••••••••" 
+                    required class="w-full px-4 py-3 text-white placeholder:text-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div> 
+
+                <div>
+                    <input 
+                        type="file" 
+                        name="photo" 
+                        accept="image/*" 
+                        class="text-white cursor-pointer file:bg-gray-800 file:text-white file:px-4 file:py-2 file:rounded-lg file:border file:border-gray-600 hover:file:bg-blue-500 transition duration-200" />
+                </div>
+                
+                <!-- Submit --> 
+                <button type="submit" 
+                class="w-full py-3 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200">
+                    Sign Up
+                </button> 
+            </form> 
+            
+            <!-- Divider --> 
+            <div class="flex items-center my-6"> 
+                <div class="flex-grow h-px bg-gray-200"></div> 
+                <span class="px-4 text-white text-sm">
+                    OR
+                </span> 
+                <div class="flex-grow h-px bg-gray-200"></div>
+            </div> 
+            
+            <!-- Extra Action --> 
+            <p class="text-center text-white text-sm"> 
+                Already have a Account? 
+                <a href="{% url 'org_login' %}" 
+                class="text-white font-semibold hover:underline">
+                Sign In
+                </a> 
+            </p> 
+        </div> 
+    </div> 
+</main> 
+{% endblock %}

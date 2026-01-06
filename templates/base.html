@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}  {% endblock%}</title>
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+
+{% if messages %}
+<div class="fixed top-5 left-1/2 -translate-x-1/2 z-50 space-y-4">
+    {% for message in messages %}
+    <div
+    class="px-6 py-4 rounded-lg shadow-lg text-white text-center
+    {% if message.tags == 'success' %} bg-green-500
+    {% elif message.tags == 'error' %} bg-red-500
+    {% elif message.tags == 'warning' %} bg-yellow-500
+    {% else %} bg-blue-500 {% endif %}
+    animate-fade-in"
+    x-data="{ show: true }"
+    x-show="show"
+    x-init="setTimeout(() => show = false, 3000)"
+    >
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<body>
+    {% block content %}
+
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Home User Home{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-lg text-center">
+
+        <h1 class="text-3xl font-bold mb-6 text-green-400">
+            Welcome, {{ request.session.username }} 👋
+        </h1>
+
+        <p class="text-gray-300 mb-8">
+            You are logged in successfully.
+        </p>
+
+        <!-- Logout Button -->
+        <form method="post" action="{% url 'user_logout' %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full py-3 bg-red-500 hover:bg-red-700 transition rounded-lg font-semibold">
+                Logout
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

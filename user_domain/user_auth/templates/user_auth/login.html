@@ -1,0 +1,129 @@
+{% extends 'base.html' %} {% block title %} Login Page {% endblock %} 
+{% block content %}
+<main>
+  <div
+    class="bg-black min-h-screen flex items-center justify-center border-2 border-gray-300"
+  >
+    <div
+      class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-8 border-1 border-blue-700"
+    >
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-extrabold text-green-600 mb-2">Welcome👋</h1>
+        <p class="text-white">Login to continue to your account</p>
+      </div>
+
+      <!-- Login Form -->
+      <form method="post" action="" class="space-y-6">
+        {% csrf_token %}
+        <!-- UserName -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            class="input outline hover:outline-blue-800"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            placeholder=""
+            required
+            class=" input outline hover:outline-blue-800"
+          />
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class=" text-sm font-semibold text-white mb-1">
+            Category
+          </label>
+          <select name="category" required class="input outline hover:outline-blue-800">
+            <option value="">Category</option>
+            <option value="member" >Member</option>
+            <option value="trainer">Trainer</option>
+          </select>
+        </div>
+
+        <!-- Remember / Forgot -->
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 text-white">
+            <input type="checkbox" class="rounded text-blue-600" />
+            Remember me
+          </label>
+          <a
+            href="{% url 'user_forgetpass' %}"
+            class="text-white hover:underline"
+          >
+            Forgot password?
+          </a>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full py-3 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200"
+        >
+          Login
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center my-6">
+        <div class="flex-grow h-px bg-gray-200"></div>
+        <span class="px-4 text-white text-sm">OR</span>
+        <div class="flex-grow h-px bg-gray-200"></div>
+      </div>
+
+      <!-- Extra Action -->
+      <p class="text-center text-white text-sm">
+        Don’t have an account?
+        <a
+          href="{% url 'undermaintance' %}"
+          class="text-white font-semibold hover:underline"
+        >
+          Sign up
+        </a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<style>
+  .input {
+    width: 100%;
+    padding: 12px;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 0.75rem;
+    color: white;
+  }
+
+  .input::placeholder {
+    color: white;
+    opacity: 1;
+  }
+
+  /* Select text color */
+  select.input {
+    color: white;
+  }
+
+  select option {
+    background: #111827;
+    color: white;
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Members{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white">
+
+    <!-- Header -->
+    <div class="p-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-green-400">Members</h1>
+            <p class="text-gray-400">Manage gym members</p>
+        </div>
+
+        <a href=""
+           class="px-6 py-3 bg-green-500 hover:bg-green-700 rounded-lg font-semibold transition">
+            ➕ Add Member
+        </a>
+    </div>
+
+    <!-- Members Table -->
+    <div class="px-8">
+        <div class="overflow-x-auto bg-gray-800 rounded-xl shadow-lg">
+            <table class="w-full text-left">
+                <thead class="bg-gray-700 text-gray-300">
+                    <tr>
+                        <th class="p-4">Name</th>
+                        <th class="p-4">Email</th>
+                        <th class="p-4">Membership</th>
+                        <th class="p-4">Trainer</th>
+                        <th class="p-4">Status</th>
+                        <th class="p-4">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for member in members %}
+                    <tr class="border-b border-gray-700 hover:bg-gray-700 transition">
+                        <td class="p-4 font-semibold">{{ member.first_name }} {{ member.last_name }}</td>
+                        <td class="p-4 text-gray-400">{{ member.email }}</td>
+                        <td class="p-4">{{ member.membership_type }}</td>
+                        <td class="p-4">{{ member.trainer_name|default:"—" }}</td>
+
+                        <td class="p-4">
+                            {% if member.is_active %}
+                                <span class="px-3 py-1 text-sm bg-green-500 rounded-full">Active</span>
+                            {% else %}
+                                <span class="px-3 py-1 text-sm bg-red-500 rounded-full">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="p-4">
+                            <a href=""
+                               class="text-blue-400 hover:underline">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="p-6 text-center text-gray-400">
+                            No members found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'base.html' %} {% block title %}Payments{% endblock %} 
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white space-y-1">
+  <!-- Header -->
+  <div class="w-full bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+    <div class="flex gap-2 flex-row">
+      <button
+        onclick="window.history.back()"
+        class="px-6 py-2 bg-white text-black font-semibold flex items-center justify-center border-2 border-green-500 hover:border-blue-700 rounded-lg transition"
+      >
+        ← Back
+      </button>
+
+      <button
+        onclick="window.location.href='{% url 'orghome' %}'"
+        class="px-6 py-2 bg-white text-black font-semibold flex items-center justify-center border-2 border-green-500 hover:border-blue-700 rounded-lg transition"
+      >
+        Home
+      </button>
+    </div>
+
+    <div class="flex flex-row gap-10">
+      <a
+        href="{% url 'payment_add' %}"
+        class="px-6 bg-white text-black flex items-center justify-center border-2 border-green-500 hover:border-blue-700 rounded-lg font-semibold transition"
+      >
+        ➕ Add Payment
+      </a>
+
+      <!-- Profile Dropdown -->
+      <div class="relative rounded-full bg-white">
+        <button
+          id="profileBtn"
+          class="px-6 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-blue-700"
+        >
+          {% if request.session.org_photo %}
+          <!-- Uploaded org photo -->
+          <img
+            src="{{ request.session.org_photo }}"
+            alt="Profile"
+            class="w-5 h-12 px-0 object-contain"
+          />
+          {% else %}
+          <!-- Auto-generated initials -->
+          <img
+            src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true"
+            alt="Profile"
+            class="w-full h-full object-cover"
+          />
+          {% endif %}
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div
+          id="profileMenu"
+          class="hidden absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
+        >
+          <a
+            href=""
+            class="block px-4 py-3 text-sm text-white hover:bg-gray-700"
+          >
+            👤 Profile
+          </a>
+
+          <a
+            href=""
+            class="block px-4 py-3 text-sm text-white hover:bg-gray-700"
+          >
+            ⚙️ Account Settings
+          </a>
+
+          <form method="post" action="{% url 'org_logout' %}">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700"
+            >
+              🚪 Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payments Table -->
+  <div class="px-8">
+    <div class="h-full text-black bg-white rounded">
+      <table class="w-full text-left">
+        <thead class="bg-gray-700 text-white rounded-lg">
+          <tr>
+            <th class="p-4">Member Name</th>
+            <th class="p-4">Amount</th>
+            <th class="p-4">Payment mode</th>
+            <th class="p-4">Date</th>
+            <th class="p-4">Status</th>
+            <th class="p-4">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for payment in payments %}
+          <tr
+            class="order-b outline-2 rounded-lg outline-green-600 hover:outline-blue-600 transition"
+          >
+            <td class="p-4 font-semibold">{{ payment.member_name|upper }}</td>
+
+            <td class="p-4">₹ {{ payment.amount }}</td>
+
+            <td class="p-4">{{ payment.payment_method|upper }}</td>
+
+            <td class="p-4">{{ payment.payment_date }}</td>
+
+            <td class="p-4">
+              {% if payment.status == "paid" %}
+              <span class="px-3 py-1 text-sm bg-green-500 rounded-full">
+                Paid
+              </span>
+              {% elif payment.status == "pending" %}
+              <span class="px-3 py-1 text-sm bg-yellow-500 rounded-full">
+                Pending
+              </span>
+              {% endif %}
+            </td>
+
+            <td class="p-4 relative">
+              <button
+                onclick="toggleDropdown('{{ payment.id }}')"
+                class="px-3 py-1 text-black outline-1 outline-green-400 hover:outline-blue-500 hover:bg-white hover:text-black rounded-lg text-sm transition"
+              >
+                Actions ▾
+              </button>
+
+              <div
+                id="dropdown-{{ payment.id }}"
+                class="hidden absolute right-0 mt-2 w-40 bg-gray-900 border border-gray-700 rounded-xl shadow-lg z-50"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                >
+                  👁 View
+                </a>
+
+                <form
+                  method="post"
+                  action="{% url 'payment_delete' payment.id %}"
+                >
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    onclick="return confirm('Delete this payment?');"
+                    class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
+                  >
+                    🗑 Delete
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="p-6 text-center text-gray-400">
+              No payments found
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleDropdown(id) {
+    event.stopPropagation();
+    document.querySelectorAll('[id^="dropdown-"]').forEach((el) => {
+      if (el.id !== `dropdown-${id}`) el.classList.add("hidden");
+    });
+    document.getElementById(`dropdown-${id}`).classList.toggle("hidden");
+  }
+
+  const profileBtn = document.getElementById("profileBtn");
+  const profileMenu = document.getElementById("profileMenu");
+
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    profileMenu.classList.toggle("hidden");
+  });
+
+  profileMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener("click", function () {
+    profileMenu.classList.add("hidden");
+
+    document.querySelectorAll('[id^="dropdown-"]').forEach((el) => {
+      el.classList.add("hidden");
+    });
+  });
+</script>
+
+{% endblock %}

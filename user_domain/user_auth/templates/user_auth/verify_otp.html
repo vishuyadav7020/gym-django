@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<main>
+    <div class="bg-black min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md bg-gray-800 gap-2 rounded-2xl shadow-xl p-8 border border-blue-700">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-green-600 mb-2">Verify OTP</h1>
+                <p class="text-white">Enter the 6-digit OTP sent to your email</p>
+            </div>
+            
+            <!-- Form -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-sm font-semibold text-white mb-1">OTP</label>
+                    <input type="text" name="otp" maxlength="6" required
+                    class="w-full px-4 py-3 text-white placeholder:text-white
+                        rounded-lg border border-white bg-transparent
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest" />
+                </div>
+                <button type="submit" class="w-full py-3 bg-blue-400 text-white font-semibold  rounded-lg hover:bg-blue-700 transition">
+                    Verify OTP
+                </button>
+            </form>
+            
+            <!-- Resend -->
+
+            <form method="POST" action="" class="text-center mt-4">
+                {% csrf_token %}
+                <button type= "submit" class="text-blue-400 hover:underline bg-transparent border-none cursor-pointer">
+                    Resend
+                </button>
+            </form>
+            
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Trainer Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white space-y-1">
+
+  <!-- NAVBAR -->
+  <div class="w-full bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+
+    <!-- LEFT -->
+    <div class="flex gap-2">
+      <button onclick="window.history.back()"
+        class="px-6 py-2 bg-white text-black font-semibold border-2 border-green-500 hover:border-blue-700 rounded-lg transition">
+        ← Back
+      </button>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="flex gap-6 items-center">
+
+      <!-- Add Payment -->
+      <a href="##########"
+        class="px-6 py-2 bg-white text-black border-2 border-green-500 hover:border-blue-700 rounded-lg font-semibold transition">
+        💰 Add Payment
+      </a>
+
+      <!-- Profile Dropdown -->
+      <div class="relative bg-white rounded-full">
+        <button id="profileBtn"
+          class="px-6 rounded-full border-2 border-green-500 hover:border-blue-700 flex items-center justify-center">
+          <img
+            src="https://ui-avatars.com/api/?name={{ request.session.trainer_name }}&background=22c55e&color=fff&bold=true"
+            class="w-8 h-8 rounded-full object-cover"
+          />
+        </button>
+
+        <div id="profileMenu"
+          class="hidden absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-lg z-50">
+
+          <a href="###########"
+            class="block px-4 py-3 text-sm hover:bg-gray-700">
+            👤 Profile
+          </a>
+
+          <a href="#"
+            class="block px-4 py-3 text-sm hover:bg-gray-700">
+            📊 My Schedule
+          </a>
+
+          <form method="post" action="{% url 'user_logout' %}">
+            {% csrf_token %}
+            <button type="submit"
+              class="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700">
+              🚪 Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="px-8 py-6">
+
+    <h1 class="text-3xl font-bold text-green-400 mb-4">
+      Assigned Members
+    </h1>
+
+    <div class="bg-white text-black rounded shadow">
+
+      <table class="w-full text-left">
+        <thead class="bg-gray-700 text-white">
+          <tr>
+            <th class="p-4">Name</th>
+            <th class="p-4">Phone</th>
+            <th class="p-4">Membership</th>
+            <th class="p-4">Status</th>
+            <th class="p-4">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for member in members %}
+          <tr class="border-b hover:bg-gray-100 transition">
+
+            <td class="p-4 font-semibold">
+              {{ member.first_name|upper }} {{ member.last_name|upper }}
+            </td>
+
+            <td class="p-4">
+              {{ member.phone }}
+            </td>
+
+            <td class="p-4">
+              {{ member.membership_type|upper }}
+            </td>
+
+            <td class="p-4">
+              {% if member.status == 'active' %}
+                <span class="px-3 py-1 bg-green-500 text-white rounded-full text-sm">
+                  Active
+                </span>
+              {% else %}
+                <span class="px-3 py-1 bg-red-500 text-white rounded-full text-sm">
+                  Inactive
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="p-4">
+              <a href="#"
+                class="px-3 py-1 border border-green-500 hover:border-blue-500 rounded-lg text-sm transition">
+                👁 View
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="p-6 text-center text-gray-500">
+              No members assigned
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+  const profileBtn = document.getElementById("profileBtn");
+  const profileMenu = document.getElementById("profileMenu");
+
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    profileMenu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", () => {
+    profileMenu.classList.add("hidden");
+  });
+</script>
+
+{% endblock %}
