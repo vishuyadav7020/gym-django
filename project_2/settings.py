@@ -107,9 +107,11 @@ DATABASES = {
     }
 }
 
-# MongoDB 
-MONGO_HOST = os.environ.get("MONGO_HOST", "mongo")
-MONGO_PORT = int(os.environ.get("MONGO_PORT", 27017))
+
+MONGO_URI = os.getenv("MONGO_URI")
+
+MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
+MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

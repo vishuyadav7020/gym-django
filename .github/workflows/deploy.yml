@@ -3,6 +3,7 @@ name: Build & Deploy Django App
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,6 +13,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set IMAGE TAG
+      run: |
+        if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+          echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        else
+          echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+        fi
+
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
@@ -19,10 +28,14 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker image
-      run: docker build -t vishu7020/gym-django:latest .
+      run: |
+        docker build -t vishu7020/gym-django:${IMAGE_TAG} .
+        docker tag vishu7020/gym-django:${IMAGE_TAG} vishu7020/gym-django:stable
 
     - name: Push Docker image
-      run: docker push vishu7020/gym-django:latest
+      run: |
+        docker push vishu7020/gym-django:${IMAGE_TAG}
+        docker push vishu7020/gym-django:stable
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1
@@ -32,9 +45,9 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           docker rm -f django_app || true
-          docker pull vishu7020/gym-django:latest
-          docker run -d --name django_app --restart always --network host \
-            -e MONGO_HOST=127.0.0.1 \
-            -e MONGO_PORT=27017 \
-            -e SECRET_KEY=super-secret-key-change-this \
-            vishu7020/gym-django:latest
+          docker pull vishu7020/gym-django:stable
+          docker run -d --name django_app \
+            --restart always \
+            --network host \
+            --env-file /var/www/gym-django/.env \
+            vishu7020/gym-django:stable
