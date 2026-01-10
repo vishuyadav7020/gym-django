@@ -11,4 +11,7 @@ urlpatterns = [
     path('verifyotp/', OrgForgetResetVerifyPassword.Orgverify_otp, name='org_verify_otp'),
     path('resetpass/', OrgForgetResetVerifyPassword.Orgreset_password, name='org_reset_password'),
 
+    path('profile/', OrgProfile.org_profile, name='org_profile'),
+    path('profile/delete/', OrgProfile.org_delete_account, name='org_delete_account'),
+
 ]
