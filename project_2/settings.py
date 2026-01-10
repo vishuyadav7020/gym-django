@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!7+5v0-_(^r5e(ul^5frdi&3+t$x-yq!55kj!r@nm_++a(-vn@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "203.145.168.18",
@@ -106,7 +110,6 @@ DATABASES = {
 # MongoDB 
 MONGO_HOST = os.environ.get("MONGO_HOST", "mongo")
 MONGO_PORT = int(os.environ.get("MONGO_PORT", 27017))
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
