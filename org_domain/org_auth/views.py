@@ -2,7 +2,7 @@ import os
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from authentication.mongo import orgs_collections
+from authentication.mongo import orgs_collections, members_collections, trainers_collections, payments_collections
 from authentication.security import hash_password, check_password
 from authentication.utils import send_otp_orgdomain
 from authentication.schemas import OrgSchema
@@ -175,3 +175,100 @@ class OrgForgetResetVerifyPassword:
             return redirect("org_login")
 
         return render(request, "org_auth/reset_password.html")
+
+
+class OrgProfile:
+
+    @staticmethod
+    def org_profile(request):
+        """Display organization profile with statistics"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        org_id = request.session.get("org_id")
+        
+        # Get organization details
+        org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+        
+        if not org:
+            messages.error(request, "Organization not found")
+            return redirect("orghome")
+        
+        # Calculate statistics
+        total_members = members_collections.count_documents({"org_id": org_id})
+        total_trainers = trainers_collections.count_documents({"org_id": org_id})
+        total_payments = payments_collections.count_documents({"org_id": org_id})
+        
+        # Calculate active members (members with active status)
+        active_members = members_collections.count_documents({
+            "org_id": org_id,
+            "status": "active"
+        })
+        
+        # Get recent activity dates
+        org_data = {
+            "orgname": org.get("orgname", ""),
+            "email": org.get("email", ""),
+            "owner_first_name": org.get("owner_first_name", ""),
+            "owner_last_name": org.get("owner_last_name", ""),
+            "org_photo": org.get("org_photo"),
+            "created_on": org.get("created_on"),
+            "updated_on": org.get("updated_on"),
+            "is_active": org.get("is_active", True),
+            "total_members": total_members,
+            "active_members": active_members,
+            "total_trainers": total_trainers,
+            "total_payments": total_payments,
+        }
+        
+        return render(request, "org_auth/profile.html", {"org": org_data})
+
+    @staticmethod
+    def org_delete_account(request):
+        """Delete organization account and all associated data"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        if request.method == "POST":
+            confirm_text = request.POST.get("confirm_text", "").strip().lower()
+            orgname = request.session.get("orgname", "").lower()
+            
+            # Verify confirmation
+            if confirm_text != orgname:
+                messages.error(request, f"Confirmation failed. Please enter '{orgname}' exactly to confirm deletion.")
+                return redirect("org_profile")
+            
+            org_id = request.session.get("org_id")
+            
+            # Delete all associated data
+            try:
+                # Delete members
+                members_collections.delete_many({"org_id": org_id})
+                
+                # Delete trainers
+                trainers_collections.delete_many({"org_id": org_id})
+                
+                # Delete payments
+                payments_collections.delete_many({"org_id": org_id})
+                
+                # Delete organization photo if exists
+                org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+                if org and org.get("org_photo"):
+                    photo_path = os.path.join(settings.MEDIA_ROOT, org["org_photo"].replace("/media/", ""))
+                    if os.path.exists(photo_path):
+                        os.remove(photo_path)
+                
+                # Delete organization
+                orgs_collections.delete_one({"_id": ObjectId(org_id)})
+                
+                # Clear session
+                request.session.flush()
+                
+                messages.success(request, "Account deleted successfully. We're sorry to see you go!")
+                return redirect("domain")
+                
+            except Exception as e:
+                messages.error(request, f"Error deleting account: {str(e)}")
+                return redirect("org_profile")
+        
+        return redirect("org_profile")
