@@ -22,22 +22,20 @@
   </div>
 
   <!-- Profile Dropdown -->
-  <div class="relative rounded-full bg-white">
+  <div class="relative">
     <button
       id="profileBtn"
-      class="px-6 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-blue-700"
+      class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-green-400 transition-all duration-300 hover:scale-110 shadow-lg bg-green-500"
     >
       {% if request.session.org_photo %}
-      <!-- Uploaded org photo -->
       <img
         src="{{ request.session.org_photo }}"
         alt="Profile"
-        class="w-5 h-12 px-0 object-contain"
+        class="w-full h-full object-cover"
       />
       {% else %}
-      <!-- Auto-generated initials -->
       <img
-        src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true"
+        src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true&size=128"
         alt="Profile"
         class="w-full h-full object-cover"
       />
@@ -49,11 +47,11 @@
       id="profileMenu"
       class="hidden absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
     >
-      <a href="" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+      <a href="{% url 'org_profile' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
         👤 Profile
       </a>
 
-      <a href="" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+      <a href="{% url 'org_account_settings' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
         ⚙️ Account Settings
       </a>
 
@@ -117,13 +115,13 @@
       />
 
       <select name="gender" required class="input outline hover:outline-blue-800">
-        <option>Gender</option>
+        <option value="">Gender</option>
         <option value="male">Male</option>
-        <option value="Female">Female</option>
+        <option value="female">Female</option>
       </select>
 
       <select name="membership_type" required class="input outline hover:outline-blue-800">
-        <option>Membership Type</option>
+        <option value="">Membership Type</option>
         <option value="monthly">Monthly</option>
         <option value="quarterly">Quarterly</option>
         <option value="yearly">Yearly</option>

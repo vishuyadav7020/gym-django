@@ -12,6 +12,11 @@ urlpatterns = [
     path('resetpass/', OrgForgetResetVerifyPassword.Orgreset_password, name='org_reset_password'),
 
     path('profile/', OrgProfile.org_profile, name='org_profile'),
-    path('profile/delete/', OrgProfile.org_delete_account, name='org_delete_account'),
+
+    path('account-settings/', OrgAccountSettings.account_settings, name='org_account_settings'),
+    path('account-settings/change-photo/', OrgAccountSettings.change_profile_photo, name='org_change_photo'),
+    path('account-settings/change-email/', OrgAccountSettings.change_email, name='org_change_email'),
+    path('account-settings/change-password/', OrgAccountSettings.change_password, name='org_change_password'),
+    path('account-settings/delete/', OrgAccountSettings.delete_account, name='org_delete_account'),
 
 ]
