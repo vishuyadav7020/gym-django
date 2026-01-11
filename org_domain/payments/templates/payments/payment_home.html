@@ -4,6 +4,89 @@
   .hover\:bg-gray-750:hover {
     background-color: #374151;
   }
+  
+  /* Custom Dropdown Styles */
+  .custom-dropdown {
+    position: relative;
+  }
+  
+  .custom-dropdown-button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-dropdown-button:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .custom-dropdown-button:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+  }
+  
+  .custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.1);
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+  }
+  
+  .custom-dropdown-menu.show {
+    display: block;
+  }
+  
+  .custom-dropdown-option {
+    padding: 0.75rem 1rem;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+  
+  .custom-dropdown-option:last-child {
+    border-bottom: none;
+  }
+  
+  .custom-dropdown-option:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    font-weight: 600;
+  }
+  
+  .custom-dropdown-option:first-child {
+    border-top-left-radius: 0.625rem;
+    border-top-right-radius: 0.625rem;
+  }
+  
+  .custom-dropdown-option:last-child {
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
+  }
 </style>
 <div class="min-h-screen bg-gray-900 text-white">
   <!-- Header -->
@@ -86,8 +169,88 @@
     </div>
   </div>
 
+  <!-- Filters Section -->
+  <div class="px-8" style="margin-top: 1rem;">
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-lg p-6 mb-6">
+      <h3 class="text-lg font-semibold text-white mb-4">Filter Payments</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Member Name Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Member Name</label>
+          <input
+            type="text"
+            id="filterMemberName"
+            placeholder="Search member..."
+            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Amount Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Amount</label>
+          <div class="custom-dropdown">
+            <button type="button" class="custom-dropdown-button" id="filterAmountButton">
+              <span id="filterAmountText">All Amounts</span>
+              <span>▼</span>
+            </button>
+            <div class="custom-dropdown-menu" id="filterAmountMenu">
+              <div class="custom-dropdown-option" data-value="">All Amounts</div>
+              <div class="custom-dropdown-option" data-value="1500">₹ 1500</div>
+              <div class="custom-dropdown-option" data-value="3500">₹ 3500</div>
+              <div class="custom-dropdown-option" data-value="8000">₹ 8000</div>
+            </div>
+            <input type="hidden" id="filterAmount" value="">
+          </div>
+        </div>
+
+        <!-- Payment Mode Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Payment Mode</label>
+          <div class="custom-dropdown">
+            <button type="button" class="custom-dropdown-button" id="filterPaymentModeButton">
+              <span id="filterPaymentModeText">All Modes</span>
+              <span>▼</span>
+            </button>
+            <div class="custom-dropdown-menu" id="filterPaymentModeMenu">
+              <div class="custom-dropdown-option" data-value="">All Modes</div>
+              <div class="custom-dropdown-option" data-value="cash">Cash</div>
+              <div class="custom-dropdown-option" data-value="upi">UPI</div>
+              <div class="custom-dropdown-option" data-value="card">Card</div>
+            </div>
+            <input type="hidden" id="filterPaymentMode" value="">
+          </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Status</label>
+          <div class="custom-dropdown">
+            <button type="button" class="custom-dropdown-button" id="filterStatusButton">
+              <span id="filterStatusText">All Status</span>
+              <span>▼</span>
+            </button>
+            <div class="custom-dropdown-menu" id="filterStatusMenu">
+              <div class="custom-dropdown-option" data-value="">All Status</div>
+              <div class="custom-dropdown-option" data-value="paid">Paid</div>
+              <div class="custom-dropdown-option" data-value="pending">Pending</div>
+            </div>
+            <input type="hidden" id="filterStatus" value="">
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 flex justify-end">
+        <button
+          onclick="clearFilters()"
+          class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-semibold transition-colors duration-200"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Payments Table -->
-  <div class="px-8 py-6">
+  <div class="px-8 pb-6">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full">
@@ -104,7 +267,11 @@
 
           <tbody class="bg-gray-800 divide-y divide-gray-700">
             {% for payment in payments %}
-            <tr class="hover:bg-gray-750 transition-colors duration-150 ease-in-out group">
+            <tr class="payment-row hover:bg-gray-750 transition-colors duration-150 ease-in-out group" 
+                data-member-name="{{ payment.member_name|upper }}"
+                data-amount="{{ payment.amount }}"
+                data-payment-mode="{{ payment.payment_method|upper }}"
+                data-status="{{ payment.status }}">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="flex-shrink-0 h-10 w-10 bg-purple-500/20 rounded-full flex items-center justify-center mr-3">
@@ -179,7 +346,7 @@
               </td>
             </tr>
             {% empty %}
-            <tr>
+            <tr class="empty-state-row">
               <td colspan="6" class="px-6 py-12 pb-16 text-center">
                 <div class="flex flex-col items-center justify-center">
                   <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
@@ -202,6 +369,147 @@
 </div>
 
 <script>
+  // Custom Dropdown functionality
+  function initCustomDropdowns() {
+    // Amount Dropdown
+    const amountButton = document.getElementById('filterAmountButton');
+    const amountMenu = document.getElementById('filterAmountMenu');
+    const amountText = document.getElementById('filterAmountText');
+    const amountInput = document.getElementById('filterAmount');
+    
+    amountButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      amountMenu.classList.toggle('show');
+      document.getElementById('filterPaymentModeMenu').classList.remove('show');
+      document.getElementById('filterStatusMenu').classList.remove('show');
+    });
+    
+    amountMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        amountInput.value = value;
+        amountText.textContent = option.textContent;
+        amountMenu.classList.remove('show');
+        filterPayments();
+      });
+    });
+    
+    // Payment Mode Dropdown
+    const paymentModeButton = document.getElementById('filterPaymentModeButton');
+    const paymentModeMenu = document.getElementById('filterPaymentModeMenu');
+    const paymentModeText = document.getElementById('filterPaymentModeText');
+    const paymentModeInput = document.getElementById('filterPaymentMode');
+    
+    paymentModeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      paymentModeMenu.classList.toggle('show');
+      amountMenu.classList.remove('show');
+      document.getElementById('filterStatusMenu').classList.remove('show');
+    });
+    
+    paymentModeMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        paymentModeInput.value = value;
+        paymentModeText.textContent = option.textContent;
+        paymentModeMenu.classList.remove('show');
+        filterPayments();
+      });
+    });
+    
+    // Status Dropdown
+    const statusButton = document.getElementById('filterStatusButton');
+    const statusMenu = document.getElementById('filterStatusMenu');
+    const statusText = document.getElementById('filterStatusText');
+    const statusInput = document.getElementById('filterStatus');
+    
+    statusButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      statusMenu.classList.toggle('show');
+      amountMenu.classList.remove('show');
+      paymentModeMenu.classList.remove('show');
+    });
+    
+    statusMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        statusInput.value = value;
+        statusText.textContent = option.textContent;
+        statusMenu.classList.remove('show');
+        filterPayments();
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!amountButton.contains(e.target) && !amountMenu.contains(e.target)) {
+        amountMenu.classList.remove('show');
+      }
+      if (!paymentModeButton.contains(e.target) && !paymentModeMenu.contains(e.target)) {
+        paymentModeMenu.classList.remove('show');
+      }
+      if (!statusButton.contains(e.target) && !statusMenu.contains(e.target)) {
+        statusMenu.classList.remove('show');
+      }
+    });
+  }
+  
+  // Filter functionality
+  function filterPayments() {
+    const memberName = document.getElementById('filterMemberName').value.toLowerCase();
+    const amount = document.getElementById('filterAmount').value;
+    const paymentMode = document.getElementById('filterPaymentMode').value.toUpperCase();
+    const status = document.getElementById('filterStatus').value;
+
+    const rows = document.querySelectorAll('.payment-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const rowMemberName = row.getAttribute('data-member-name').toLowerCase();
+      const rowAmount = row.getAttribute('data-amount');
+      const rowPaymentMode = row.getAttribute('data-payment-mode');
+      const rowStatus = row.getAttribute('data-status');
+
+      const matchesMemberName = !memberName || rowMemberName.includes(memberName);
+      const matchesAmount = !amount || rowAmount === amount;
+      const matchesPaymentMode = !paymentMode || rowPaymentMode === paymentMode;
+      const matchesStatus = !status || rowStatus === status;
+
+      if (matchesMemberName && matchesAmount && matchesPaymentMode && matchesStatus) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Show/hide empty state
+    const emptyRow = document.querySelector('.empty-state-row');
+    if (emptyRow) {
+      emptyRow.style.display = visibleCount === 0 ? '' : 'none';
+    }
+  }
+
+  function clearFilters() {
+    document.getElementById('filterMemberName').value = '';
+    document.getElementById('filterAmount').value = '';
+    document.getElementById('filterPaymentMode').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterAmountText').textContent = 'All Amounts';
+    document.getElementById('filterPaymentModeText').textContent = 'All Modes';
+    document.getElementById('filterStatusText').textContent = 'All Status';
+    document.getElementById('filterAmountMenu').classList.remove('show');
+    document.getElementById('filterPaymentModeMenu').classList.remove('show');
+    document.getElementById('filterStatusMenu').classList.remove('show');
+    filterPayments();
+  }
+
+  // Add event listeners for filters
+  document.addEventListener('DOMContentLoaded', function() {
+    initCustomDropdowns();
+    document.getElementById('filterMemberName').addEventListener('input', filterPayments);
+  });
+
   function toggleDropdown(id) {
     event.stopPropagation();
     const button = event.target.closest('button');
