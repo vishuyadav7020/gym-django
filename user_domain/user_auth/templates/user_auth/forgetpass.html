@@ -21,24 +21,41 @@
                       <input type="email" name="email" placeholder="Email" required class="input outline hover:outline-blue-800" />
                     </div>
 
+                    <!-- Gym Name Dropdown -->
                     <div>
-                      <label class="vlock text-sm font-semibold text-white mb-1"> Gym Name</label>
-                      <select name="gymname" required class="input outline hover:outline-blue-800">
-                        <option>Your Gym Name</option>
-                        {% for orgname in orgnames %}
-                        <option value="{{orgname.id}}">
-                          {{orgname.orgname | upper }}
-                        </option>
-                        {% endfor %}
-                      </select>
+                      <label class="block text-sm font-semibold text-white mb-1">Gym Name</label>
+                      <div class="custom-dropdown">
+                        <button type="button" class="custom-dropdown-button" id="gymNameButton">
+                          <span id="gymNameText">Your Gym Name</span>
+                          <span>▼</span>
+                        </button>
+                        <div class="custom-dropdown-menu" id="gymNameMenu">
+                          <div class="custom-dropdown-option" data-value="">Your Gym Name</div>
+                          {% for orgname in orgnames %}
+                          <div class="custom-dropdown-option" data-value="{{orgname.id}}">
+                            {{orgname.orgname | upper }}
+                          </div>
+                          {% endfor %}
+                        </div>
+                        <input type="hidden" name="gymname" id="gymname" value="" required>
+                      </div>
                     </div>
+                    
+                    <!-- Category Dropdown -->
                     <div>
-                      <label class="vlock text-sm font-semibold text-white mb-1">Category</label>
-                      <select name="category" required class="input outline hover:outline-blue-800">
-                        <option value="">Category</option>
-                        <option value="member">Member</option>
-                        <option value="trainer">Trainer</option>
-                      </select>
+                      <label class="block text-sm font-semibold text-white mb-1">Category</label>
+                      <div class="custom-dropdown">
+                        <button type="button" class="custom-dropdown-button" id="categoryButton">
+                          <span id="categoryText">Category</span>
+                          <span>▼</span>
+                        </button>
+                        <div class="custom-dropdown-menu" id="categoryMenu">
+                          <div class="custom-dropdown-option" data-value="">Category</div>
+                          <div class="custom-dropdown-option" data-value="member">Member</div>
+                          <div class="custom-dropdown-option" data-value="trainer">Trainer</div>
+                        </div>
+                        <input type="hidden" name="category" id="category" value="" required>
+                      </div>
                     </div>
                     <!-- Submit -->
                     <button type="submit" class="w-full py-3 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200">
@@ -65,14 +82,148 @@
     opacity: 1;
   }
 
-  /* Select text color */
-  select.input {
-    color: white;
+  /* Custom Dropdown Styles */
+  .custom-dropdown {
+    position: relative;
   }
 
-  select option {
-    background: #111827;
+  .custom-dropdown-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
     color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-dropdown-button:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .custom-dropdown-button:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+  }
+
+  .custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.1);
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+  }
+
+  .custom-dropdown-menu.show {
+    display: block;
+  }
+
+  .custom-dropdown-option {
+    padding: 0.75rem 1rem;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom: none;
+  }
+
+  .custom-dropdown-option:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    font-weight: 600;
+  }
+
+  .custom-dropdown-option:first-child {
+    border-top-left-radius: 0.625rem;
+    border-top-right-radius: 0.625rem;
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
   }
   </style>
+
+  <script>
+    // Custom Dropdown functionality
+    function initCustomDropdowns() {
+      // Gym Name Dropdown
+      const gymNameButton = document.getElementById('gymNameButton');
+      const gymNameMenu = document.getElementById('gymNameMenu');
+      const gymNameText = document.getElementById('gymNameText');
+      const gymNameInput = document.getElementById('gymname');
+      
+      gymNameButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        gymNameMenu.classList.toggle('show');
+        document.getElementById('categoryMenu').classList.remove('show');
+      });
+      
+      gymNameMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+        option.addEventListener('click', () => {
+          const value = option.getAttribute('data-value');
+          gymNameInput.value = value;
+          gymNameText.textContent = option.textContent;
+          gymNameMenu.classList.remove('show');
+        });
+      });
+
+      // Category Dropdown
+      const categoryButton = document.getElementById('categoryButton');
+      const categoryMenu = document.getElementById('categoryMenu');
+      const categoryText = document.getElementById('categoryText');
+      const categoryInput = document.getElementById('category');
+      
+      categoryButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        categoryMenu.classList.toggle('show');
+        document.getElementById('gymNameMenu').classList.remove('show');
+      });
+      
+      categoryMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+        option.addEventListener('click', () => {
+          const value = option.getAttribute('data-value');
+          categoryInput.value = value;
+          categoryText.textContent = option.textContent;
+          categoryMenu.classList.remove('show');
+        });
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!gymNameButton.contains(e.target) && !gymNameMenu.contains(e.target)) {
+          gymNameMenu.classList.remove('show');
+        }
+        if (!categoryButton.contains(e.target) && !categoryMenu.contains(e.target)) {
+          categoryMenu.classList.remove('show');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initCustomDropdowns();
+    });
+  </script>
 {% endblock %}
