@@ -24,22 +24,20 @@
     </div>
 
     <!-- Profile Dropdown -->
-    <div class="relative rounded-full bg-white">
+    <div class="relative">
       <button
         id="profileBtn"
-        class="px-6 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-blue-700"
+        class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-green-400 transition-all duration-300 hover:scale-110 shadow-lg bg-green-500"
       >
         {% if request.session.org_photo %}
-        <!-- Uploaded org photo -->
         <img
           src="{{ request.session.org_photo }}"
           alt="Profile"
-          class="w-5 h-12 px-0 object-contain"
+          class="w-full h-full object-cover"
         />
         {% else %}
-        <!-- Auto-generated initials -->
         <img
-          src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true"
+          src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true&size=128"
           alt="Profile"
           class="w-full h-full object-cover"
         />
@@ -51,11 +49,11 @@
         id="profileMenu"
         class="hidden absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
       >
-        <a href="" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+        <a href="{% url 'org_profile' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
           👤 Profile
         </a>
 
-        <a href="" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+        <a href="{% url 'org_account_settings' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
           ⚙️ Account Settings
         </a>
 
@@ -117,15 +115,19 @@
           class="input placeholder:text-white outline hover:outline-blue-800"
         />
 
-        <select
-          name="trainer_gender"
-          required
-          class="input placeholder:text-white outline hover:outline-blue-800"
-        >
-          <option>Gender</option>
-          <option value="male">Male</option>
-          <option value="Female">Female</option>
-        </select>
+        <!-- Gender Dropdown -->
+        <div class="custom-dropdown">
+          <button type="button" class="custom-dropdown-button" id="genderButton">
+            <span id="genderText">Gender</span>
+            <span>▼</span>
+          </button>
+          <div class="custom-dropdown-menu" id="genderMenu">
+            <div class="custom-dropdown-option" data-value="">Gender</div>
+            <div class="custom-dropdown-option" data-value="male">Male</div>
+            <div class="custom-dropdown-option" data-value="female">Female</div>
+          </div>
+          <input type="hidden" name="trainer_gender" id="trainer_gender" value="" required>
+        </div>
 
         <button
           type="submit"
@@ -141,38 +143,152 @@
 <style>
   .input {
     width: 100%;
-    padding: 14px 16px;
-    background: #020617;
-    border: 2px solid #1e293b;
-    border-radius: 1rem; /* 👈 Rounded */
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
     color: white;
-    appearance: none; /* 👈 Important */
+    appearance: none;
     cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .input:hover {
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
   }
 
   .input:focus {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.5);
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
   }
 
-  /* Dropdown arrow spacing */
-  select.input {
-    background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 7l3 3 3-3'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.2rem;
-    padding-right: 3rem;
+  .input::placeholder {
+    color: #9ca3af;
+    opacity: 1;
   }
 
-  /* Options (limited support – browser dependent) */
-  select option {
-    background: #020617;
+  /* Custom Dropdown Styles */
+  .custom-dropdown {
+    position: relative;
+  }
+
+  .custom-dropdown-button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
     color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-dropdown-button:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .custom-dropdown-button:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+  }
+
+  .custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.1);
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+  }
+
+  .custom-dropdown-menu.show {
+    display: block;
+  }
+
+  .custom-dropdown-option {
+    padding: 0.75rem 1rem;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom: none;
+  }
+
+  .custom-dropdown-option:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    font-weight: 600;
+  }
+
+  .custom-dropdown-option:first-child {
+    border-top-left-radius: 0.625rem;
+    border-top-right-radius: 0.625rem;
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
   }
 </style>
 
 <script>
+  // Custom Dropdown functionality
+  function initCustomDropdowns() {
+    // Gender Dropdown
+    const genderButton = document.getElementById('genderButton');
+    const genderMenu = document.getElementById('genderMenu');
+    const genderText = document.getElementById('genderText');
+    const genderInput = document.getElementById('trainer_gender');
+    
+    genderButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      genderMenu.classList.toggle('show');
+    });
+    
+    genderMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        genderInput.value = value;
+        genderText.textContent = option.textContent;
+        genderMenu.classList.remove('show');
+      });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!genderButton.contains(e.target) && !genderMenu.contains(e.target)) {
+        genderMenu.classList.remove('show');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initCustomDropdowns();
+  });
+
   const profileBtn = document.getElementById("profileBtn");
   const profileMenu = document.getElementById("profileMenu");
 

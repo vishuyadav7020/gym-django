@@ -1,4 +1,5 @@
 import os
+import uuid
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -269,6 +270,241 @@ class OrgProfile:
                 
             except Exception as e:
                 messages.error(request, f"Error deleting account: {str(e)}")
-                return redirect("org_profile")
+                return redirect("org_account_settings")
         
-        return redirect("org_profile")
+        return redirect("org_account_settings")
+
+
+class OrgAccountSettings:
+
+    @staticmethod
+    def account_settings(request):
+        """Display account settings page"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        org_id = request.session.get("org_id")
+        org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+        
+        if not org:
+            messages.error(request, "Organization not found")
+            return redirect("orghome")
+        
+        org_data = {
+            "orgname": org.get("orgname", ""),
+            "email": org.get("email", ""),
+            "owner_first_name": org.get("owner_first_name", ""),
+            "owner_last_name": org.get("owner_last_name", ""),
+            "org_photo": org.get("org_photo"),
+        }
+        
+        return render(request, "org_auth/account_settings.html", {"org": org_data})
+
+    @staticmethod
+    def change_profile_photo(request):
+        """Update organization profile photo"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        if request.method == "POST":
+            org_id = request.session.get("org_id")
+            org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+            
+            if not org:
+                messages.error(request, "Organization not found")
+                return redirect("org_account_settings")
+            
+            photo = request.FILES.get("photo")
+            if photo:
+                # Delete old photo if exists
+                if org.get("org_photo"):
+                    old_photo_path = os.path.join(settings.MEDIA_ROOT, org["org_photo"].replace("/media/", ""))
+                    if os.path.exists(old_photo_path):
+                        os.remove(old_photo_path)
+                
+                # Save new photo
+                org_folder = os.path.join(settings.MEDIA_ROOT, "orgs")
+                os.makedirs(org_folder, exist_ok=True)
+                
+                # Generate unique filename
+                file_extension = os.path.splitext(photo.name)[1]
+                unique_filename = f"{uuid.uuid4()}{file_extension}"
+                file_path = os.path.join(org_folder, unique_filename)
+                
+                with open(file_path, "wb+") as f:
+                    for chunk in photo.chunks():
+                        f.write(chunk)
+                
+                photo_url = f"/media/orgs/{unique_filename}"
+                
+                # Update database
+                orgs_collections.update_one(
+                    {"_id": ObjectId(org_id)},
+                    {
+                        "$set": {
+                            "org_photo": photo_url,
+                            "updated_on": datetime.utcnow()
+                        }
+                    }
+                )
+                
+                # Update session
+                request.session["org_photo"] = photo_url
+                request.session.modified = True
+                
+                messages.success(request, "Profile photo updated successfully!")
+            else:
+                messages.error(request, "Please select a photo to upload")
+            
+            return redirect("org_account_settings")
+        
+        return redirect("org_account_settings")
+
+    @staticmethod
+    def change_email(request):
+        """Change organization email"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        if request.method == "POST":
+            org_id = request.session.get("org_id")
+            new_email = request.POST.get("email", "").strip().lower()
+            password = request.POST.get("password", "")
+            
+            if not new_email or not password:
+                messages.error(request, "Email and password are required")
+                return redirect("org_account_settings")
+            
+            org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+            
+            if not org:
+                messages.error(request, "Organization not found")
+                return redirect("org_account_settings")
+            
+            # Verify password
+            if not check_password(password, org["password"]):
+                messages.error(request, "Incorrect password")
+                return redirect("org_account_settings")
+            
+            # Check if email already exists
+            existing_org = orgs_collections.find_one({"email": new_email})
+            if existing_org and str(existing_org["_id"]) != org_id:
+                messages.error(request, "Email already in use by another organization")
+                return redirect("org_account_settings")
+            
+            # Update email
+            orgs_collections.update_one(
+                {"_id": ObjectId(org_id)},
+                {
+                    "$set": {
+                        "email": new_email,
+                        "updated_on": datetime.utcnow()
+                    }
+                }
+            )
+            
+            messages.success(request, "Email updated successfully!")
+            return redirect("org_account_settings")
+        
+        return redirect("org_account_settings")
+
+    @staticmethod
+    def change_password(request):
+        """Change organization password"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        if request.method == "POST":
+            org_id = request.session.get("org_id")
+            current_password = request.POST.get("current_password", "")
+            new_password = request.POST.get("new_password", "")
+            confirm_password = request.POST.get("confirm_password", "")
+            
+            if not current_password or not new_password or not confirm_password:
+                messages.error(request, "All password fields are required")
+                return redirect("org_account_settings")
+            
+            if new_password != confirm_password:
+                messages.error(request, "New passwords do not match")
+                return redirect("org_account_settings")
+            
+            if len(new_password) < 6:
+                messages.error(request, "Password must be at least 6 characters long")
+                return redirect("org_account_settings")
+            
+            org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+            
+            if not org:
+                messages.error(request, "Organization not found")
+                return redirect("org_account_settings")
+            
+            # Verify current password
+            if not check_password(current_password, org["password"]):
+                messages.error(request, "Current password is incorrect")
+                return redirect("org_account_settings")
+            
+            # Update password
+            orgs_collections.update_one(
+                {"_id": ObjectId(org_id)},
+                {
+                    "$set": {
+                        "password": hash_password(new_password),
+                        "updated_on": datetime.utcnow()
+                    }
+                }
+            )
+            
+            messages.success(request, "Password changed successfully!")
+            return redirect("org_account_settings")
+        
+        return redirect("org_account_settings")
+
+    @staticmethod
+    def delete_account(request):
+        """Delete organization account and all associated data"""
+        if not request.session.get("org_id") or not request.session.get("orgname"):
+            return redirect("domain")
+        
+        if request.method == "POST":
+            confirm_text = request.POST.get("confirm_text", "").strip().lower()
+            orgname = request.session.get("orgname", "").lower()
+            
+            # Verify confirmation
+            if confirm_text != orgname:
+                messages.error(request, f"Confirmation failed. Please enter '{orgname}' exactly to confirm deletion.")
+                return redirect("org_account_settings")
+            
+            org_id = request.session.get("org_id")
+            
+            # Delete all associated data
+            try:
+                # Delete members
+                members_collections.delete_many({"org_id": org_id})
+                
+                # Delete trainers
+                trainers_collections.delete_many({"org_id": org_id})
+                
+                # Delete payments
+                payments_collections.delete_many({"org_id": org_id})
+                
+                # Delete organization photo if exists
+                org = orgs_collections.find_one({"_id": ObjectId(org_id)})
+                if org and org.get("org_photo"):
+                    photo_path = os.path.join(settings.MEDIA_ROOT, org["org_photo"].replace("/media/", ""))
+                    if os.path.exists(photo_path):
+                        os.remove(photo_path)
+                
+                # Delete organization
+                orgs_collections.delete_one({"_id": ObjectId(org_id)})
+                
+                # Clear session
+                request.session.flush()
+                
+                messages.success(request, "Account deleted successfully. We're sorry to see you go!")
+                return redirect("domain")
+                
+            except Exception as e:
+                messages.error(request, f"Error deleting account: {str(e)}")
+                return redirect("org_account_settings")
+        
+        return redirect("org_account_settings")
