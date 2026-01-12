@@ -1,0 +1,221 @@
+{% extends "base.html" %} 
+{% block title %}Organization Profile{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-900 text-white">
+  <!-- Navigation Bar -->
+  <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-green-400">
+        {{ request.session.orgname|upper }}
+      </h1>
+      <p class="text-sm text-gray-400">Organization Profile</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="{% url 'orghome' %}" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-200">
+        ← Back to Dashboard
+      </a>
+      <div class="relative">
+        <button
+          id="profileBtn"
+          class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-green-400 transition-all duration-300 hover:scale-110 shadow-lg bg-green-500"
+        >
+          {% if request.session.org_photo %}
+          <img src="{{ request.session.org_photo }}" alt="Profile" class="w-full h-full object-cover" />
+          {% else %}
+          <img
+            src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true&size=128"
+            alt="Profile"
+            class="w-full h-full object-cover"
+          />
+          {% endif %}
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="p-8 md:p-12 max-w-7xl mx-auto">
+    <!-- Profile Header -->
+    <div class="mb-8">
+      <h2 class="text-4xl font-bold text-white mb-2">Organization Profile</h2>
+      <p class="text-gray-400">Manage your organization details and settings</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column - Profile Card -->
+      <div class="lg:col-span-1">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+          <!-- Profile Picture -->
+          <div class="flex justify-center mb-6">
+            <div class="relative">
+              {% if org.org_photo %}
+              <img
+                src="{{ org.org_photo }}"
+                alt="{{ org.orgname }}"
+                class="w-32 h-32 rounded-full object-cover border-4 border-green-500 shadow-xl"
+              />
+              {% else %}
+              <img
+                src="https://ui-avatars.com/api/?name={{ org.orgname }}&background=22c55e&color=fff&bold=true&size=256"
+                alt="{{ org.orgname }}"
+                class="w-32 h-32 rounded-full object-cover border-4 border-green-500 shadow-xl"
+              />
+              {% endif %}
+              <div class="absolute bottom-0 right-0 w-10 h-10 bg-green-500 rounded-full border-4 border-gray-800 flex items-center justify-center">
+                <span class="text-white text-xl">✓</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Organization Name -->
+          <h3 class="text-2xl font-bold text-center text-white mb-2">{{ org.orgname|upper }}</h3>
+          <p class="text-center text-gray-400 text-sm mb-6">Organization</p>
+
+          <!-- Status Badge -->
+          <div class="flex justify-center mb-6">
+            {% if org.is_active %}
+            <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-full text-sm font-semibold border border-green-500/30">
+              ✓ Active Account
+            </span>
+            {% else %}
+            <span class="px-4 py-2 bg-red-500/20 text-red-400 rounded-full text-sm font-semibold border border-red-500/30">
+              ✗ Inactive Account
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Member Since -->
+          {% if org.created_on %}
+          <div class="text-center text-gray-400 text-sm">
+            <p>Member since</p>
+            <p class="text-white font-semibold">{{ org.created_on|date:"F Y" }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right Column - Details & Statistics -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Total Members -->
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-green-500 transition-all duration-300 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-2xl">👥</span>
+              </div>
+            </div>
+            <h4 class="text-gray-400 text-sm mb-1">Total Members</h4>
+            <p class="text-3xl font-bold text-white">{{ org.total_members }}</p>
+            <p class="text-xs text-gray-500 mt-2">{{ org.active_members }} active</p>
+          </div>
+
+          <!-- Total Trainers -->
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-blue-500 transition-all duration-300 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-2xl">🧑‍🏫</span>
+              </div>
+            </div>
+            <h4 class="text-gray-400 text-sm mb-1">Total Trainers</h4>
+            <p class="text-3xl font-bold text-white">{{ org.total_trainers }}</p>
+            <p class="text-xs text-gray-500 mt-2">All trainers</p>
+          </div>
+
+          <!-- Total Payments -->
+          <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:border-yellow-500 transition-all duration-300 shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-2xl">💳</span>
+              </div>
+            </div>
+            <h4 class="text-gray-400 text-sm mb-1">Total Payments</h4>
+            <p class="text-3xl font-bold text-white">{{ org.total_payments }}</p>
+            <p class="text-xs text-gray-500 mt-2">Transactions</p>
+          </div>
+        </div>
+
+        <!-- Organization Details -->
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+            <span class="mr-3">📋</span>
+            Organization Details
+          </h3>
+
+          <div class="space-y-4">
+            <!-- Organization Name -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-gray-700">
+              <div class="mb-2 md:mb-0">
+                <label class="text-gray-400 text-sm">Organization Name</label>
+                <p class="text-white font-semibold text-lg">{{ org.orgname|upper }}</p>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-gray-700">
+              <div class="mb-2 md:mb-0">
+                <label class="text-gray-400 text-sm">Email Address</label>
+                <p class="text-white font-semibold">{{ org.email }}</p>
+              </div>
+            </div>
+
+            <!-- Owner Name -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-gray-700">
+              <div class="mb-2 md:mb-0">
+                <label class="text-gray-400 text-sm">Owner Name</label>
+                <p class="text-white font-semibold">{{ org.owner_first_name }} {{ org.owner_last_name }}</p>
+              </div>
+            </div>
+
+            <!-- Account Created -->
+            {% if org.created_on %}
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-gray-700">
+              <div class="mb-2 md:mb-0">
+                <label class="text-gray-400 text-sm">Account Created</label>
+                <p class="text-white font-semibold">{{ org.created_on|date:"F d, Y" }}</p>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Last Updated -->
+            {% if org.updated_on %}
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3">
+              <div class="mb-2 md:mb-0">
+                <label class="text-gray-400 text-sm">Last Updated</label>
+                <p class="text-white font-semibold">{{ org.updated_on|date:"F d, Y" }}</p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Account Actions -->
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+            <span class="mr-3">⚙️</span>
+            Account Actions
+          </h3>
+
+          <div class="space-y-4">
+            <a
+              href="{% url 'orghome' %}"
+              class="block w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors duration-200 text-center"
+            >
+              Go to Dashboard
+            </a>
+
+            <a
+              href="{% url 'org_account_settings' %}"
+              class="block w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 text-center"
+            >
+              Account Settings
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}
