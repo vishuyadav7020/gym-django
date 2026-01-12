@@ -117,4 +117,45 @@ def member_delete(request, member_id):
     
     return render(request, "members/member_home.html")
 
+def member_update(request, member_id):
+
+    if not request.session.get("org_id") or not request.session.get("orgname"):
+        return redirect("domain")
+    
+    org_id = request.session.get("org_id")
+    
+    # Fetch member data
+    member = members_collections.find_one({
+        "_id": ObjectId(member_id),
+        "org_id": org_id
+    })
+    
+    if not member:
+        messages.error(request, "Member not found")
+        return redirect("member_home")
+    
+    member["id"] = str(member["_id"])
+
+    if request.method == "POST":
+        # Update member data
+        update_data = {
+            "first_name": request.POST["first_name"].lower(),
+            "last_name": request.POST["last_name"].lower(),
+            "email": request.POST["email"].lower(),
+            "phone": request.POST["phone"],
+            "membership_type": request.POST["membership_type"],
+            "gender": request.POST.get("gender", "").lower(),
+            "status": request.POST.get("status", "active")
+        }
+        
+        members_collections.update_one(
+            {"_id": ObjectId(member_id), "org_id": org_id},
+            {"$set": update_data}
+        )
+        
+        messages.success(request, "Member Updated Successfully")
+        return redirect("member_home")
+
+    return render(request, "members/member_update.html", {"member": member})
+
 

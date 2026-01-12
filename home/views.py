@@ -1,11 +1,36 @@
 from django.shortcuts import render, redirect
-
+from django.contrib import messages
+from .whatsapp import send_whatsapp_message, send_whatsapp_otp
+import random
+from django.conf import settings
 
 # Create your views here.
 
-def test_html(request):
+# def test_html(request):
+#     if request.method == "POST":
+#         phone = request.POST.get("phone")
+#         message_type = request.POST.get("type")
 
-    return render(request, "home/test.html")
+#         try:
+#             if message_type == "otp":
+#                 otp = random.randint(100000, 999999)
+#                 send_whatsapp_otp(
+#                     phone,
+#                     otp
+#                 )
+#                 messages.success(request, f"OTP sent successfully: {otp}")
+
+#             else:
+#                 text = request.POST.get("message")
+#                 send_whatsapp_message(
+#                     phone,
+#                     text
+#                 )
+#                 messages.success(request, "WhatsApp message sent successfully")
+
+#         except Exception as e:
+#             messages.error(request, str(e))
+#     return render(request, "home/test.html")
 
 
 class home:
