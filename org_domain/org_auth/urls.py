@@ -21,4 +21,4 @@ urlpatterns = [
     path('account-settings/delete/', OrgAccountSettings.delete_account, name='org_delete_account'),
 
 ] 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

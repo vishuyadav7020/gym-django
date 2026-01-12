@@ -18,6 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from .views import serve_media
 
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
     path('org/members', include("org_domain.members.urls")),
     path('org/payment', include("org_domain.payments.urls")),
     path("org/trainers", include("org_domain.trainers.urls")),
-] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+    path("media/<path:path>", serve_media),
+] 
