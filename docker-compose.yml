@@ -1,7 +1,6 @@
 services:
   mongo:
     image: mongo:7
-    container_name: mongo
     restart: always
     volumes:
       - mongo_data:/data/db
@@ -14,11 +13,10 @@ services:
     restart: always
     depends_on:
       - mongo
-    ports:
-      - "8000:8000"
-    environment:
-      MONGO_HOST: mongo
-      MONGO_PORT: 27017
+    expose:
+      - "8000"
+    env_file:
+      - .env
     networks:
       - project_network
 
