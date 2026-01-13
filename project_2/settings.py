@@ -36,6 +36,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
+    "stackfit.in",
+    "www.stackfit.in",
     "203.145.168.18",
     "192.168.1.15",
     "localhost",
@@ -66,6 +68,7 @@ EXTERNAL_APPS = [
     'user_domain.user_auth',
     'user_domain.user_trainer',
     'user_domain.user_member',
+    'phonepeconfiguration',
 ]
 
 INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS
@@ -123,6 +126,13 @@ TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")  # Twilio sandbox
 TWILIO_OTP_TEMPLATE_SID = os.getenv("TWILIO_OTP_TEMPLATE_SID")
 
+#PhonePe Credentials
+PHONEPE_CLIENT_ID=os.getenv("PHONEPE_CLIENT_ID")
+PHONEPE_CLIENT_SECRET=os.getenv("PHONEPE_CLIENT_SECRET")
+PHONEPE_CLIENT_VERSION=os.getenv("PHONEPE_CLIENT_VERSION")
+PHONEPE_ENV=os.getenv("PHONEPE_ENV")   # or PRODUCTION
+PHONEPE_REDIRECT_URL=os.getenv("PHONEPE_REDIRECT_URL")
+PHONEPE_CALLBACK_URL=os.getenv("PHONEPE_CALLBACK_URL")
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
