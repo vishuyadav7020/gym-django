@@ -31,16 +31,14 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /var/www/gym-django
-          
-          echo "Pull latest image"
+          docker rm -f django_app || true
           docker pull vishu7020/gym-django:latest
 
-          echo "Stop old containers"
-          docker-compose down
+          docker run -d \
+            --name django_app \
+            --restart always \
+            -p 8000:8000 \
+            --env-file /var/www/gym-django/.env \
+            vishu7020/gym-django:latest
 
-          echo "Start containers"
-          docker-compose up -d
-
-          echo "Reload nginx"
           sudo systemctl reload nginx
