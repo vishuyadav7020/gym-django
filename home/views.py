@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .whatsapp import send_whatsapp_message, send_whatsapp_otp
 import random
 from django.conf import settings
 
