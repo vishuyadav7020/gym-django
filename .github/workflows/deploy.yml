@@ -2,8 +2,7 @@ name: Build & Deploy Django App
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches: [ "testing", "develop" ]
 jobs:
   deploy:
     runs-on: ubuntu-latest
