@@ -75,7 +75,7 @@ EXTERNAL_APPS = [
     'user_domain.user_auth',
     'user_domain.user_trainer',
     'user_domain.user_member',
-    ##'phonepeconfiguration',
+    'whatsapp'
 ]
 
 INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS
