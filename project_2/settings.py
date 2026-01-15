@@ -121,6 +121,7 @@ DATABASES = {
     }
 }
 
+#Tunnel_Id:- b876eed0-8b03-43ed-9512-d9392026bb00
 #Mongo Db configuration
 MONGO_URI = os.getenv("MONGO_URI")
 
@@ -195,3 +196,18 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # Media/Images Configuration
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
