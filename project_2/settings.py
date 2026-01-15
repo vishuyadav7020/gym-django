@@ -19,25 +19,38 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
-load_dotenv(BASE_DIR / ".env.local")
+ENV = os.getenv("DJANGO_ENV", "local")
 
+if ENV == "local":
+    load_dotenv(BASE_DIR / ".env.local")
+else:
+    load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!7+5v0-_(^r5e(ul^5frdi&3+t$x-yq!55kj!r@nm_++a(-vn@'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
+    "stackfit.in",
+    "www.stackfit.in",
     "203.145.168.18",
     "192.168.1.15",
     "localhost",
     "127.0.0.1",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://stackfit.in",
+    "https://www.stackfit.in"
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 SESSION_SAVE_EVERY_REQUEST = True
 
 
@@ -62,6 +75,7 @@ EXTERNAL_APPS = [
     'user_domain.user_auth',
     'user_domain.user_trainer',
     'user_domain.user_member',
+    ##'phonepeconfiguration',
 ]
 
 INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS
@@ -107,11 +121,26 @@ DATABASES = {
     }
 }
 
-
+#Tunnel_Id:- b876eed0-8b03-43ed-9512-d9392026bb00
+#Mongo Db configuration
 MONGO_URI = os.getenv("MONGO_URI")
 
 MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
+
+#Whatsapp Configurations
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")  # Twilio sandbox
+TWILIO_OTP_TEMPLATE_SID = os.getenv("TWILIO_OTP_TEMPLATE_SID")
+
+#PhonePe Credentials
+PHONEPE_CLIENT_ID=os.getenv("PHONEPE_CLIENT_ID")
+PHONEPE_CLIENT_SECRET=os.getenv("PHONEPE_CLIENT_SECRET")
+PHONEPE_CLIENT_VERSION=os.getenv("PHONEPE_CLIENT_VERSION")
+PHONEPE_ENV=os.getenv("PHONEPE_ENV")   # or PRODUCTION
+PHONEPE_REDIRECT_URL=os.getenv("PHONEPE_REDIRECT_URL")
+PHONEPE_CALLBACK_URL=os.getenv("PHONEPE_CALLBACK_URL")
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -161,9 +190,24 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "vishu21csu370@gmail.com"
-EMAIL_HOST_PASSWORD = "chqv nmsu wore chjp"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 # Media/Images Configuration
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}

@@ -11,6 +11,6 @@ urlpatterns = [
     path('', domain, name='domain'),
     path('user/home', home.user_home, name='userhome'),
     path('org/home', home.org_home, name='orghome'),
-    path('test/', test_html, name='test'),
+    ##path('test/', test_html, name='test'),
     path('undermaintance/', underMaintance, name="undermaintance")
 ]

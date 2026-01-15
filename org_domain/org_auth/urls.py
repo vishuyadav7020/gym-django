@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf.urls.static import static
 from .views import *
 
 
@@ -19,4 +20,5 @@ urlpatterns = [
     path('account-settings/change-password/', OrgAccountSettings.change_password, name='org_change_password'),
     path('account-settings/delete/', OrgAccountSettings.delete_account, name='org_delete_account'),
 
-]
+] 
+

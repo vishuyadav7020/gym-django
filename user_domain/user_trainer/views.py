@@ -16,3 +16,9 @@ def user_trainer_home(request):
         member["id"] = str(member["_id"])
 
     return render(request, "trainer/user_trainer_home.html", {"members" : members})
+
+def user_trainer_profile(request):
+    return render(request, "trainer/user_trainer_profile.html")
+
+def user_trainer_account_setting(request):
+    return render(request, "trainer/user_trainer_account_setting.html")

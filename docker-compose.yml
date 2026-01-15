@@ -1,10 +1,12 @@
 services:
   mongo:
     image: mongo:7
-    container_name: mongo
+    container_name: mongo_db
     restart: always
     volumes:
       - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: gym_database
     networks:
       - project_network
 
@@ -14,16 +16,32 @@ services:
     restart: always
     depends_on:
       - mongo
-    ports:
-      - "8000:8000"
-    environment:
-      MONGO_HOST: mongo
-      MONGO_PORT: 27017
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    networks:
+      - project_network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: always
+    command: tunnel run
+    volumes:
+      - ./cloudflared:/etc/cloudflared
+      - ~/.cloudflared:/root/.cloudflared:ro
     networks:
       - project_network
 
 volumes:
   mongo_data:
+  static_volume:
+  media_volume:
 
 networks:
   project_network:
+    driver: bridge

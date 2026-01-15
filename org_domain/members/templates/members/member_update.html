@@ -1,0 +1,411 @@
+{% extends "base.html" %} {% block title %}Update Member{% endblock %}
+{% block content %}
+
+<!-- Navbar -->
+<nav
+  class="w-full bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between"
+>
+  <div class="flex gap-2 flex-row">
+    <button
+      onclick="window.history.back()"
+      class="px-6 py-2 bg-white text-black font-semibold flex items-center justify-center border-2 border-green-500 hover:border-blue-700 rounded-lg transition"
+    >
+      ← Back
+    </button>
+
+    <button
+      onclick="window.location.href='{% url 'orghome' %}'"
+      class="px-6 py-2 bg-white text-black font-semibold flex items-center justify-center border-2 border-green-500 hover:border-blue-700 rounded-lg transition"
+    >
+      Home
+    </button>
+  </div>
+
+  <!-- Profile Dropdown -->
+  <div class="relative">
+    <button
+      id="profileBtn"
+      class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-green-500 hover:border-green-400 transition-all duration-300 hover:scale-110 shadow-lg bg-green-500"
+    >
+      {% if request.session.org_photo %}
+      <img
+        src="{{ request.session.org_photo }}"
+        alt="Profile"
+        class="w-full h-full object-cover"
+      />
+      {% else %}
+      <img
+        src="https://ui-avatars.com/api/?name={{ request.session.orgname }}&background=22c55e&color=fff&bold=true&size=128"
+        alt="Profile"
+        class="w-full h-full object-cover"
+      />
+      {% endif %}
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div
+      id="profileMenu"
+      class="hidden absolute right-0 mt-3 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
+    >
+      <a href="{% url 'org_profile' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+        👤 Profile
+      </a>
+
+      <a href="{% url 'org_account_settings' %}" class="block px-4 py-3 text-sm text-white hover:bg-gray-700">
+        ⚙️ Account Settings
+      </a>
+
+      <form method="post" action="{% url 'org_logout' %}">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700"
+        >
+          🚪 Logout
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="min-h-screen bg-gray-900 flex items-center justify-center">
+  <div
+    class="w-full max-w-xl bg-gray-800 p-8 rounded-2xl shadow-lg outline outline-white hover:outline-blue-800"
+  >
+    <h2 class="text-3xl font-bold text-green-400 mb-6 text-center">
+      Update Member
+    </h2>
+
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <div class="grid grid-cols-2 gap-4">
+        <input
+          name="first_name"
+          placeholder="First Name"
+          value="{{ member.first_name|capfirst }}"
+          style="color: white"
+          required
+          class="input outline hover:outline-blue-800"
+        />
+        <input
+          name="last_name"
+          placeholder="Last Name"
+          value="{{ member.last_name|capfirst }}"
+          required
+          class="input outline hover:outline-blue-800"
+        />
+      </div>
+
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        value="{{ member.email }}"
+        required
+        class="input outline hover:outline-blue-800"
+      />
+
+      <input
+        name="phone"
+        type="tel"
+        placeholder="Phone Number"
+        value="{{ member.phone }}"
+        maxlength="10"
+        required
+        class="input outline hover:outline-blue-800"
+      />
+
+      <!-- Gender Dropdown -->
+      <div class="custom-dropdown">
+        <button type="button" class="custom-dropdown-button" id="genderButton">
+          <span id="genderText">{{ member.gender|capfirst|default:"Gender" }}</span>
+          <span>▼</span>
+        </button>
+        <div class="custom-dropdown-menu" id="genderMenu">
+          <div class="custom-dropdown-option" data-value="male">Male</div>
+          <div class="custom-dropdown-option" data-value="female">Female</div>
+        </div>
+        <input type="hidden" name="gender" id="gender" value="{{ member.gender|default:'' }}">
+      </div>
+
+      <!-- Membership Type Dropdown -->
+      <div class="custom-dropdown">
+        <button type="button" class="custom-dropdown-button" id="membershipTypeButton">
+          <span id="membershipTypeText">{{ member.membership_type|capfirst|default:"Membership Type" }}</span>
+          <span>▼</span>
+        </button>
+        <div class="custom-dropdown-menu" id="membershipTypeMenu">
+          <div class="custom-dropdown-option" data-value="monthly">Monthly</div>
+          <div class="custom-dropdown-option" data-value="quarterly">Quarterly</div>
+          <div class="custom-dropdown-option" data-value="yearly">Yearly</div>
+        </div>
+        <input type="hidden" name="membership_type" id="membership_type" value="{{ member.membership_type|default:'' }}" required>
+      </div>
+
+      <!-- Status Dropdown -->
+      <div class="custom-dropdown">
+        <button type="button" class="custom-dropdown-button" id="statusButton">
+          <span id="statusText">{{ member.status|capfirst|default:"Active" }}</span>
+          <span>▼</span>
+        </button>
+        <div class="custom-dropdown-menu" id="statusMenu">
+          <div class="custom-dropdown-option" data-value="active">Active</div>
+          <div class="custom-dropdown-option" data-value="inactive">Inactive</div>
+        </div>
+        <input type="hidden" name="status" id="status" value="{{ member.status|default:'active' }}" required>
+      </div>
+
+      <div class="flex gap-4 pt-4">
+        <button
+          type="submit"
+          class="flex-1 py-3 bg-green-500 hover:bg-green-700 rounded-lg font-semibold transition"
+        >
+          Update Member
+        </button>
+
+        <a
+          href="{% url 'member_home' %}"
+          class="flex-1 py-3 bg-gray-700 text-white hover:bg-white hover:text-black rounded-lg font-semibold text-center transition"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    color: white;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .input:hover {
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+  }
+
+  .input::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+  }
+
+  /* Custom Dropdown Styles */
+  .custom-dropdown {
+    position: relative;
+  }
+
+  .custom-dropdown-button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-dropdown-button:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #22c55e;
+    box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .custom-dropdown-button:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+  }
+
+  .custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(34, 197, 94, 0.1);
+    z-index: 50;
+    display: none;
+    overflow: hidden;
+  }
+
+  .custom-dropdown-menu.show {
+    display: block;
+  }
+
+  .custom-dropdown-option {
+    padding: 0.75rem 1rem;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom: none;
+  }
+
+  .custom-dropdown-option:hover {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    font-weight: 600;
+  }
+
+  .custom-dropdown-option:first-child {
+    border-top-left-radius: 0.625rem;
+    border-top-right-radius: 0.625rem;
+  }
+
+  .custom-dropdown-option:last-child {
+    border-bottom-left-radius: 0.625rem;
+    border-bottom-right-radius: 0.625rem;
+  }
+</style>
+
+<script>
+  // Custom Dropdown functionality
+  function initCustomDropdowns() {
+    // Gender Dropdown
+    const genderButton = document.getElementById('genderButton');
+    const genderMenu = document.getElementById('genderMenu');
+    const genderText = document.getElementById('genderText');
+    const genderInput = document.getElementById('gender');
+    
+    // Set initial value
+    const initialGender = genderInput.value;
+    if (initialGender) {
+      genderText.textContent = initialGender.charAt(0).toUpperCase() + initialGender.slice(1);
+    }
+    
+    genderButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      genderMenu.classList.toggle('show');
+      document.getElementById('membershipTypeMenu').classList.remove('show');
+      document.getElementById('statusMenu').classList.remove('show');
+    });
+    
+    genderMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        genderInput.value = value;
+        genderText.textContent = option.textContent;
+        genderMenu.classList.remove('show');
+      });
+    });
+
+    // Membership Type Dropdown
+    const membershipTypeButton = document.getElementById('membershipTypeButton');
+    const membershipTypeMenu = document.getElementById('membershipTypeMenu');
+    const membershipTypeText = document.getElementById('membershipTypeText');
+    const membershipTypeInput = document.getElementById('membership_type');
+    
+    // Set initial value
+    const initialMembershipType = membershipTypeInput.value;
+    if (initialMembershipType) {
+      membershipTypeText.textContent = initialMembershipType.charAt(0).toUpperCase() + initialMembershipType.slice(1);
+    }
+    
+    membershipTypeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      membershipTypeMenu.classList.toggle('show');
+      document.getElementById('genderMenu').classList.remove('show');
+      document.getElementById('statusMenu').classList.remove('show');
+    });
+    
+    membershipTypeMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        membershipTypeInput.value = value;
+        membershipTypeText.textContent = option.textContent;
+        membershipTypeMenu.classList.remove('show');
+      });
+    });
+
+    // Status Dropdown
+    const statusButton = document.getElementById('statusButton');
+    const statusMenu = document.getElementById('statusMenu');
+    const statusText = document.getElementById('statusText');
+    const statusInput = document.getElementById('status');
+    
+    // Set initial value
+    const initialStatus = statusInput.value;
+    if (initialStatus) {
+      statusText.textContent = initialStatus.charAt(0).toUpperCase() + initialStatus.slice(1);
+    }
+    
+    statusButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      statusMenu.classList.toggle('show');
+      document.getElementById('genderMenu').classList.remove('show');
+      document.getElementById('membershipTypeMenu').classList.remove('show');
+    });
+    
+    statusMenu.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        statusInput.value = value;
+        statusText.textContent = option.textContent;
+        statusMenu.classList.remove('show');
+      });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!genderButton.contains(e.target) && !genderMenu.contains(e.target)) {
+        genderMenu.classList.remove('show');
+      }
+      if (!membershipTypeButton.contains(e.target) && !membershipTypeMenu.contains(e.target)) {
+        membershipTypeMenu.classList.remove('show');
+      }
+      if (!statusButton.contains(e.target) && !statusMenu.contains(e.target)) {
+        statusMenu.classList.remove('show');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initCustomDropdowns();
+  });
+
+  const profileBtn = document.getElementById("profileBtn");
+  const profileMenu = document.getElementById("profileMenu");
+
+  profileBtn.addEventListener("click", () => {
+    profileMenu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.classList.add("hidden");
+    }
+  });
+</script>
+
+{% endblock %}

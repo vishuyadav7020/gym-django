@@ -1,3 +1,4 @@
+from bson import ObjectId
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from authentication.schemas import TrainerSchema
@@ -54,6 +55,18 @@ def trainer_add(request):
     return render(request, "trainers/trainer_add.html")
 
 def trainer_delete(request, trainer_id):
+    if not request.session.get("orgname") or not request.session.get("org_id"):
+        return redirect("domain")
+    
+    org_id = request.session.get("org_id")
+
+    if request.method == "POST":
+
+        trainers_collections.delete_one({"org_id" : org_id,
+                                         "_id" : ObjectId(trainer_id)})
+        messages.success(request,"Trainer Deleted Successfully")
+        
+        return redirect("trainer_home")
     return render(request, "trainers/trainer_delete.html")
 
 
