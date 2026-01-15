@@ -43,9 +43,6 @@ volumes:
   media_volume:
 
 networks:
-<<<<<<< HEAD
-  project_network:
-=======
   project_network:
     driver: bridge
->>>>>>> develop
+
