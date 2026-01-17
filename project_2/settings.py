@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
     "192.168.1.15",
     "localhost",
     "127.0.0.1",
+    "asphaltic-hai-humorful.ngrok-free.dev"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -72,10 +73,10 @@ EXTERNAL_APPS = [
     'org_domain.members',
     'org_domain.payments',
     'org_domain.trainers',
+    'org_domain.whatsapp',
     'user_domain.user_auth',
     'user_domain.user_trainer',
     'user_domain.user_member',
-    'whatsapp'
 ]
 
 INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS
@@ -129,10 +130,9 @@ MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 
 #Whatsapp Configurations
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")  # Twilio sandbox
-TWILIO_OTP_TEMPLATE_SID = os.getenv("TWILIO_OTP_TEMPLATE_SID")
+ZIXFLOW_API_BASE_URL = "https://api.zixflow.com"
+ZIXFLOW_API_KEY = "303ddc534113d5b13ebcd1b2e47d34390ced13da389b3bbf916a77d0696a5ef836a581816bc78c1d"
+ZIXFLOW_PHONE_ID = "941934725674026"
 
 #PhonePe Credentials
 PHONEPE_CLIENT_ID=os.getenv("PHONEPE_CLIENT_ID")
