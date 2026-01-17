@@ -133,14 +133,6 @@ ZIXFLOW_API_BASE_URL = os.getenv("ZIXFLOW_API_BASE_URL")
 ZIXFLOW_API_KEY = os.getenv("ZIXFLOW_API_KEY")
 ZIXFLOW_PHONE_ID = os.getenv("ZIXFLOW_PHONE_ID")
 
-#PhonePe Credentials
-PHONEPE_CLIENT_ID=os.getenv("PHONEPE_CLIENT_ID")
-PHONEPE_CLIENT_SECRET=os.getenv("PHONEPE_CLIENT_SECRET")
-PHONEPE_CLIENT_VERSION=os.getenv("PHONEPE_CLIENT_VERSION")
-PHONEPE_ENV=os.getenv("PHONEPE_ENV")   # or PRODUCTION
-PHONEPE_REDIRECT_URL=os.getenv("PHONEPE_REDIRECT_URL")
-PHONEPE_CALLBACK_URL=os.getenv("PHONEPE_CALLBACK_URL")
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
