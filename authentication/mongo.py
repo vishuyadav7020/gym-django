@@ -16,7 +16,7 @@ else:
         port=settings.MONGO_PORT,
     )
 # Connect to the database
-db = client["gym_management"]
+db = client["gym_management_cv"]
 logger.info("✅ MongoDB connection initialized")
 # Collections
 users_collections = db["Users"]
