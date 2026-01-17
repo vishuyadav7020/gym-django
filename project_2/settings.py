@@ -73,10 +73,10 @@ EXTERNAL_APPS = [
     'org_domain.members',
     'org_domain.payments',
     'org_domain.trainers',
-    'org_domain.whatsapp',
     'user_domain.user_auth',
     'user_domain.user_trainer',
     'user_domain.user_member',
+    'whatsapp'
 ]
 
 INSTALLED_APPS = INTERNAL_APPS + EXTERNAL_APPS
@@ -122,7 +122,7 @@ DATABASES = {
     }
 }
 
-#Tunnel_Id:- b876eed0-8b03-43ed-9512-d9392026bb00
+
 #Mongo Db configuration
 MONGO_URI = os.getenv("MONGO_URI")
 
@@ -130,9 +130,9 @@ MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 
 #Whatsapp Configurations
-ZIXFLOW_API_BASE_URL = "https://api.zixflow.com"
-ZIXFLOW_API_KEY = "303ddc534113d5b13ebcd1b2e47d34390ced13da389b3bbf916a77d0696a5ef836a581816bc78c1d"
-ZIXFLOW_PHONE_ID = "941934725674026"
+ZIXFLOW_API_BASE_URL = os.getenv("ZIXFLOW_API_BASE_URL")
+ZIXFLOW_API_KEY = os.getenv("ZIXFLOW_API_KEY")
+ZIXFLOW_PHONE_ID = os.getenv("ZIXFLOW_PHONE_ID")
 
 #PhonePe Credentials
 PHONEPE_CLIENT_ID=os.getenv("PHONEPE_CLIENT_ID")

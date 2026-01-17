@@ -6,7 +6,7 @@ def send_account_creation_template(to_number, name, email):
     url = (f"{settings.ZIXFLOW_API_BASE_URL}/api/v1/campaign/whatsapp/send")
 
     payload = {
-        "to": to_number,  # e.g. "918447685442"
+        "to": to_number,  
         "phoneId": settings.ZIXFLOW_PHONE_ID,
         "templateName": "account_creation",
         "language": "en_US",

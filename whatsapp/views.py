@@ -7,14 +7,14 @@ from .templates import *
 
 
 @csrf_exempt
-def send_whatsapp_message(request):
+def send_whatsapp_message(request): ##Template Less Message
     if request.method != "POST":
         return JsonResponse({"error": "POST required"}, status=405)
 
     data = json.loads(request.body)
 
     payload = {
-        "to": data["to"],  # e.g. 918447685442 (NO +)
+        "to": data["to"],  
         "phoneId": settings.ZIXFLOW_PHONE_ID,
         "type": "text",
         "text": {
@@ -38,7 +38,7 @@ def send_whatsapp_message(request):
     return JsonResponse(response.json(), status=response.status_code)
 
 
-@csrf_exempt   # ✅ THIS IS REQUIRED
+@csrf_exempt   
 def whatsapp_incoming_webhook(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
@@ -57,7 +57,7 @@ def whatsapp_incoming_webhook(request):
     return JsonResponse({"status": "received"})
 
 @csrf_exempt
-def test_whatsapp(request):
+def test_whatsapp(request): ##Template Message 
     if request.method == "POST":
         result = send_account_creation_template(
             to_number="918447685442",

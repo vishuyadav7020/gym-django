@@ -1,8 +1,7 @@
 name: Build & Deploy Django App
 
 on:
-  push:
-    branches: []
+  workflow_dispatch:
 
 jobs:
   deploy:

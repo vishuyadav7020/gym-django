@@ -31,6 +31,6 @@ urlpatterns = [
     path('org/members', include("org_domain.members.urls")),
     path('org/payment', include("org_domain.payments.urls")),
     path("org/trainers", include("org_domain.trainers.urls")),
-    path("whatsapp/", include("org_domain.whatsapp.urls")),
+    path("whatsapp/", include("whatsapp.urls")),
     path("media/<path:path>", serve_media),
 ] 
