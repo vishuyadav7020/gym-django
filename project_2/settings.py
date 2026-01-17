@@ -74,8 +74,7 @@ EXTERNAL_APPS = [
     'org_domain.payments',
     'org_domain.trainers',
     'user_domain.user_auth',
-    'user_domain.user_trainer',
-    'user_domain.user_member',
+    'user_domain.user',
     'whatsapp'
 ]
 

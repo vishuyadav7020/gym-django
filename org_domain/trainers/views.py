@@ -3,8 +3,6 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from authentication.schemas import TrainerSchema
 from authentication.mongo import trainers_collections
-from authentication.security import hash_password
-from authentication.utils import generate_password_trainer_email
 from django.utils import timezone
 
 # Create your views here.
@@ -36,13 +34,11 @@ def trainer_add(request):
             messages.error(request, "Trainer Already Exist")
             return redirect("trainer_add")
         
-        password = hash_password(generate_password_trainer_email(trainer_email, orgname))
 
         trainer_data = TrainerSchema.create_trainer(
             org_id=org_id,
             trainer_name = request.POST["trainer_name"].lower(),
             trainer_email = request.POST["trainer_email"].lower(),
-            trainer_password= password,
             trainer_phone = request.POST["trainer_phone"],  
             trainer_salary = request.POST["trainer_salary"],
             trainer_gender = request.POST["trainer_gender"],
@@ -50,7 +46,7 @@ def trainer_add(request):
         )
 
         trainers_collections.insert_one(trainer_data)
-        messages.success(request, "Trainer Added Successfully and Login Credentiali is Send to your Trainer Email")
+        messages.success(request, "Trainer Added Successfully")
         return redirect("trainer_home")
     return render(request, "trainers/trainer_add.html")
 

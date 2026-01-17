@@ -19,29 +19,28 @@ class userLoginRegisterLogout:
         if request.method == "POST":
             email = request.POST["email"].lower()
             password = request.POST["password"]
-            category = request.POST["category"]
 
-            if category == "trainer":
-                trainer = trainers_collections.find_one({"trainer_email" : email})
-                if not trainer or not check_password(password, trainer["trainer_password"]):
-                    messages.error(request, "Inavalid Credentials")
-                    return redirect("user_login")
+            # if category == "trainer":
+            #     trainer = trainers_collections.find_one({"trainer_email" : email})
+            #     if not trainer or not check_password(password, trainer["trainer_password"]):
+            #         messages.error(request, "Inavalid Credentials")
+            #         return redirect("user_login")
                 
-                request.session["org_id"] = str(trainer["org_id"])
-                request.session["trainer_id"] = str(trainer["_id"])
-                request.session["trainer_name"] = trainer["trainer_name"]
-                #request.session["category"] = category
+            #     request.session["org_id"] = str(trainer["org_id"])
+            #     request.session["trainer_id"] = str(trainer["_id"])
+            #     request.session["trainer_name"] = trainer["trainer_name"]
+            #     #request.session["category"] = category
 
-                print(request.session["org_id"])
-                print(request.session["trainer_id"])
-                print(request.session["trainer_name"])
-                #print(request.session["category"])
+            #     print(request.session["org_id"])
+            #     print(request.session["trainer_id"])
+            #     print(request.session["trainer_name"])
+            #     #print(request.session["category"])
 
-                messages.success(request, "Login Successfully")
-                return redirect("user_trainer_home")
+            #     messages.success(request, "Login Successfully")
+            #     return redirect("user_trainer_home")
             
-            if category == "member":
-                return redirect("undermaintance")
+
+            return redirect("undermaintance")
 
         return render(request, "user_auth/login.html")
 

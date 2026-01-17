@@ -78,24 +78,24 @@ def send_otp_orgdomain(org):
                 fail_silently=False,
             )
     
-def generate_password_trainer_email(trainer_email, orgname):
+# def generate_password_trainer_email(trainer_email, orgname):
 
-    passw = generate_password()
+#     passw = generate_password()
 
-    subject = "Trainer Login Credentials"
-    message = (
-        f"Your trainer account for {orgname} has been created.\n\n"
-        f"user Name:- {trainer_email}\n"
-        f"Password:- {passw}\n\n"
-        f"Please change your password after first login."
-    )
+#     subject = "Trainer Login Credentials"
+#     message = (
+#         f"Your trainer account for {orgname} has been created.\n\n"
+#         f"user Name:- {trainer_email}\n"
+#         f"Password:- {passw}\n\n"
+#         f"Please change your password after first login."
+#     )
 
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [trainer_email],
-        fail_silently=False,
-    )
+#     send_mail(
+#         subject,
+#         message,
+#         settings.DEFAULT_FROM_EMAIL,
+#         [trainer_email],
+#         fail_silently=False,
+#     )
     
-    return passw
+#     return passw

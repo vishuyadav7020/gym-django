@@ -106,7 +106,6 @@ class TrainerSchema(BaseSchema):
         org_id,
         trainer_name: str,
         trainer_email: str,
-        trainer_password: bytes,
         trainer_phone: str,
         trainer_salary: float,
         trainer_gender : str,
@@ -123,7 +122,6 @@ class TrainerSchema(BaseSchema):
             "experience_years": None,
             "trainer_gender" : trainer_gender,
             "trainer_salary": trainer_salary,
-            "trainer_password" : trainer_password,
             "trainer_join_date" : trainer_join_date,
             "status": status,
             **BaseSchema.timestamps()
