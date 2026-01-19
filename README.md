@@ -17,19 +17,7 @@ docker up -d\\
  mongodb ruuning on conatiner mongo 7 \\
  command to access mongosh :- docker exec -it mongo_db mongosh\\
 
-
-\
-kubernaties secret file command create on .env.kuber file\
-If later you:\
-
-Change .env.kuber\
-
-Add new variables\
-
-You must re-create the secret (Kubernetes does NOT auto-update secrets):\
-
-kubectl delete secret web-env -n testing
-kubectl create secret generic web-env \
-  --from-env-file=/var/www/gym-django/.env.kuber \
-  -n testing
-kubectl rollout restart deployment web -n testing
+database connection check\\
+docker exec -it django_cv python manage.py shell\\
+from authentication.mongo import db\\
+db.list_collection_names()

@@ -51,8 +51,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
+<<<<<<< HEAD
 SESSION_SAVE_EVERY_REQUEST = True
 SECURE_SSL_REDIRECT = False
+=======
+>>>>>>> deploy
 
 
 # Application definition
