@@ -24,7 +24,7 @@ ENV = os.getenv("DJANGO_ENV", "local")
 if ENV == "local":
     load_dotenv(BASE_DIR / ".env.local")
 else:
-    load_dotenv(BASE_DIR / ".env")
+    load_dotenv(BASE_DIR / ".env.kuber")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -42,17 +42,17 @@ ALLOWED_HOSTS = [
     "192.168.1.15",
     "localhost",
     "127.0.0.1",
-    "asphaltic-hai-humorful.ngrok-free.dev"
-]
+    "asphaltic-hai-humorful.ngrok-free.dev",]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://stackfit.in",
-    "https://www.stackfit.in"
+    "https://www.stackfit.in",
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 SESSION_SAVE_EVERY_REQUEST = True
+SECURE_SSL_REDIRECT = False
 
 
 # Application definition
@@ -125,6 +125,7 @@ DATABASES = {
 #Mongo Db configuration
 MONGO_URI = os.getenv("MONGO_URI")
 
+###Uncomment if You Want to use Only DockerContainer and Comment it if using Kubernates
 MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 
@@ -201,4 +202,14 @@ LOGGING = {
         "handlers": ["console"],
         "level": "INFO",
     },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }

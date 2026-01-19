@@ -1,0 +1,155 @@
+[
+    {
+        "label": "admin",
+        "importPath": "django.contrib",
+        "description": "django.contrib",
+        "isExtraImport": true,
+        "detail": "django.contrib",
+        "documentation": {}
+    },
+    {
+        "label": "AppConfig",
+        "importPath": "django.apps",
+        "description": "django.apps",
+        "isExtraImport": true,
+        "detail": "django.apps",
+        "documentation": {}
+    },
+    {
+        "label": "models",
+        "importPath": "django.db",
+        "description": "django.db",
+        "isExtraImport": true,
+        "detail": "django.db",
+        "documentation": {}
+    },
+    {
+        "label": "requests,",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests.",
+        "description": "requests.",
+        "detail": "requests.",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "django.conf",
+        "description": "django.conf",
+        "isExtraImport": true,
+        "detail": "django.conf",
+        "documentation": {}
+    },
+    {
+        "label": "settings",
+        "importPath": "django.conf",
+        "description": "django.conf",
+        "isExtraImport": true,
+        "detail": "django.conf",
+        "documentation": {}
+    },
+    {
+        "label": "TestCase",
+        "importPath": "django.test",
+        "description": "django.test",
+        "isExtraImport": true,
+        "detail": "django.test",
+        "documentation": {}
+    },
+    {
+        "label": "path",
+        "importPath": "django.urls",
+        "description": "django.urls",
+        "isExtraImport": true,
+        "detail": "django.urls",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "JsonResponse",
+        "importPath": "django.http",
+        "description": "django.http",
+        "isExtraImport": true,
+        "detail": "django.http",
+        "documentation": {}
+    },
+    {
+        "label": "csrf_exempt",
+        "importPath": "django.views.decorators.csrf",
+        "description": "django.views.decorators.csrf",
+        "isExtraImport": true,
+        "detail": "django.views.decorators.csrf",
+        "documentation": {}
+    },
+    {
+        "label": "WhatsappConfig",
+        "kind": 6,
+        "importPath": "apps",
+        "description": "apps",
+        "peekOfCode": "class WhatsappConfig(AppConfig):\n    default_auto_field = 'django.db.models.BigAutoField'\n    name = 'whatsapp'",
+        "detail": "apps",
+        "documentation": {}
+    },
+    {
+        "label": "send_account_creation_template",
+        "kind": 2,
+        "importPath": "templates",
+        "description": "templates",
+        "peekOfCode": "def send_account_creation_template(to_number, name, email):\n    url = (f\"{settings.ZIXFLOW_API_BASE_URL}/api/v1/campaign/whatsapp/send\")\n    payload = {\n        \"to\": to_number,  \n        \"phoneId\": settings.ZIXFLOW_PHONE_ID,\n        \"templateName\": \"account_creation\",\n        \"language\": \"en_US\",\n        \"variables\": {\n            \"body_1\": name,\n            \"body_2\": email",
+        "detail": "templates",
+        "documentation": {}
+    },
+    {
+        "label": "urlpatterns",
+        "kind": 5,
+        "importPath": "urls",
+        "description": "urls",
+        "peekOfCode": "urlpatterns = [\n    path(\"send/\", send_whatsapp_message),\n    path(\"webhook/whatsapp/incoming/\", whatsapp_incoming_webhook),\n    path(\"test-whatsapp/\", test_whatsapp),\n]",
+        "detail": "urls",
+        "documentation": {}
+    },
+    {
+        "label": "send_whatsapp_message",
+        "kind": 2,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "def send_whatsapp_message(request): ##Template Less Message\n    if request.method != \"POST\":\n        return JsonResponse({\"error\": \"POST required\"}, status=405)\n    data = json.loads(request.body)\n    payload = {\n        \"to\": data[\"to\"],  \n        \"phoneId\": settings.ZIXFLOW_PHONE_ID,\n        \"type\": \"text\",\n        \"text\": {\n            \"preview_url\": False,",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "whatsapp_incoming_webhook",
+        "kind": 2,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "def whatsapp_incoming_webhook(request):\n    if request.method != \"POST\":\n        return JsonResponse({\"error\": \"POST only\"}, status=405)\n    data = json.loads(request.body)\n    print(\"\\n📩 Incoming WhatsApp Webhook:\")\n    print(json.dumps(data, indent=2))\n    sender = data.get(\"sender\", {}).get(\"number\")\n    message = data.get(\"message\", {}).get(\"text\", {}).get(\"body\")\n    print(f\"\\n📞 From: {sender}\")\n    print(f\"💬 Message: {message}\")",
+        "detail": "views",
+        "documentation": {}
+    },
+    {
+        "label": "test_whatsapp",
+        "kind": 2,
+        "importPath": "views",
+        "description": "views",
+        "peekOfCode": "def test_whatsapp(request): ##Template Message \n    if request.method == \"POST\":\n        result = send_account_creation_template(\n            to_number=\"918447685442\",\n            name=\"John\",\n            email=\"john@gmail.com\"\n        )\n        return JsonResponse(result)\n    return JsonResponse({\"error\": \"Only POST allowed\"}, status=405)",
+        "detail": "views",
+        "documentation": {}
+    }
+]

@@ -3,14 +3,17 @@ import uuid
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 from authentication.mongo import orgs_collections, members_collections, trainers_collections, payments_collections
 from authentication.security import hash_password, check_password
 from authentication.utils import send_otp_orgdomain
 from authentication.schemas import OrgSchema
-from datetime import datetime, timedelta
+from authentication.password_security import *
+from datetime import datetime
 from django.core.mail import send_mail
 from bson import ObjectId
 from home.urls import *
+
 
 # Create your views here.
 
@@ -24,21 +27,33 @@ class OrgLoginRegisterLogout:
         if request.method == "POST":
             orgname = request.POST["orgname"].lower()
             password = request.POST["password"]
+            
+            # 🔒 NEW: Check if org is locked
+            if is_locked():
+                messages.error(request, "Too many failed attempts. Try later.")
+                return redirect("org_login")
 
             org = orgs_collections.find_one({"orgname": orgname})
 
+            # ❌ Invalid credentials
             if not org or not check_password(password, org["password"]):
-                messages.error(request, "Invalid Credentials")
+                locked, attempts = record_failed_attempt()
+                
+                if locked:
+                    messages.error(request, "Account locked due to too many failed attempts. Try later.")
+                else:
+                    messages.error(request, f"Invalid credentials. Attempts left: {MAX_ATTEMPTS - attempts}")
                 return redirect("org_login")
+            
+            # ✅ NEW: Reset attempts on success
+            reset_attempts()
 
             request.session["org_id"] = str(org["_id"])
             request.session["orgname"] = org["orgname"]
             request.session["org_photo"] = org["org_photo"]
 
             messages.success(request, "Login Successful")
-            org_name = request.session.get("orgname")
             return redirect("orghome")
-
         return render(request, "org_auth/login.html")
 
     ### ---------------------------------- Register New org ---------------------------------- ###
@@ -86,6 +101,7 @@ class OrgLoginRegisterLogout:
     ### ---------------------------------- Logout org ---------------------------------- ###
     
     @staticmethod
+    @require_POST
     def Orglogout(request):
         if not request.session.get("org_id") and not request.session.get("orgname"):
             return redirect('domain')

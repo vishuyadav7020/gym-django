@@ -10,13 +10,23 @@ services:
     networks:
       - project_network
 
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data   
+    networks:
+      - project_network
+
   web:
     image: vishu7020/gym-django:latest
     container_name: django_app
     restart: always
     depends_on:
       - mongo
-    expose:
+    port:
       - "8001:8000"
     env_file:
       - .env
@@ -39,8 +49,10 @@ services:
 
 volumes:
   mongo_data:
+  redis_data:
   static_volume:
   media_volume:
+
 
 networks:
   project_network:
