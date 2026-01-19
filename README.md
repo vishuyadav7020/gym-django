@@ -16,3 +16,4 @@ docker pull\\
 docker up -d\\
  mongodb ruuning on conatiner mongo 7 \\
  command to access mongosh :- docker exec -it mongo_db mongosh\\
+asfadff
