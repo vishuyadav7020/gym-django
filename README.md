@@ -16,4 +16,9 @@ docker pull\\
 docker up -d\\
  mongodb ruuning on conatiner mongo 7 \\
  command to access mongosh :- docker exec -it mongo_db mongosh\\
-asfadff
+asfadff\\
+
+database connection check\\
+docker exec -it django_cv python manage.py shell\\
+from authentication.mongo import db\\
+db.list_collection_names()
