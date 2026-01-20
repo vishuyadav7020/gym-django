@@ -1,32 +1,46 @@
-import requests, json
+import requests
 from django.conf import settings
 
 
-def send_account_creation_template(to_number, name, email):
-    url = (f"{settings.ZIXFLOW_API_BASE_URL}/api/v1/campaign/whatsapp/send")
+def send_whatsapp_template(
+    *,
+    campaign_name: str,
+    phone: str,
+    user_name: str,
+    template_params: list,
+    tags: list | None = None,
+    attributes: dict | None = None,
+    media: dict | None = None,
+):
+    """
+    Generic AiSensy WhatsApp sender
+    """
 
     payload = {
-        "to": to_number,  
-        "phoneId": settings.ZIXFLOW_PHONE_ID,
-        "templateName": "account_creation",
-        "language": "en_US",
-        "variables": {
-            "body_1": name,
-            "body_2": email
-        },
-        "source": "API",
-        "submissionStatus": True
+        "apiKey": settings.AISENSY_API_KEY,
+        "campaignName": campaign_name,
+        "destination": phone,              # +9198XXXXXXXX
+        "userName": user_name,
+        "source": settings.AISENSY_SOURCE,
+        "templateParams": template_params,
     }
 
-    headers = {
-        "Authorization": f"Bearer {settings.ZIXFLOW_API_KEY}",
-        "Content-Type": "application/json"
-    }
+    if tags:
+        payload["tags"] = tags
 
-    response = requests.post(url, json=payload, headers=headers)
+    if attributes:
+        payload["attributes"] = attributes
 
-    print("STATUS:", response.status_code)
-    print("RESPONSE:", response.text)
+    if media:
+        payload["media"] = media
 
-    return response.json()
+    response = requests.post(
+        settings.AISENSY_API_URL,
+        json=payload,
+        timeout=15
+    )
 
+    try:
+        return response.status_code, response.json()
+    except Exception:
+        return response.status_code, response.text

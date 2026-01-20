@@ -51,11 +51,8 @@ CSRF_TRUSTED_ORIGINS = [
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
-<<<<<<< HEAD
 SESSION_SAVE_EVERY_REQUEST = True
 SECURE_SSL_REDIRECT = False
-=======
->>>>>>> deploy
 
 
 # Application definition
@@ -132,10 +129,10 @@ MONGO_URI = os.getenv("MONGO_URI")
 MONGO_HOST = os.getenv("MONGO_HOST", "127.0.0.1")
 MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
 
-#Whatsapp Configurations
-ZIXFLOW_API_BASE_URL = os.getenv("ZIXFLOW_API_BASE_URL")
-ZIXFLOW_API_KEY = os.getenv("ZIXFLOW_API_KEY")
-ZIXFLOW_PHONE_ID = os.getenv("ZIXFLOW_PHONE_ID")
+# AiSensy / WhatsApp
+AISENSY_API_URL=os.getenv("AISENSY_API_URL")
+AISENSY_API_KEY=os.getenv("AISENSY_API_KEY")
+AISENSY_SOURCE=os.getenv("AISENSY_SOURCE")
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -210,7 +207,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

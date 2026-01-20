@@ -1,69 +1,91 @@
-import json
-import requests
-from django.conf import settings
+from .templates import send_whatsapp_template
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .templates import *
+
+def test_whatsapp(phone, orgname, owner_first_name, email):
+    return send_whatsapp_template(
+        campaign_name="django gym",
+        phone=phone,
+        user_name=orgname,
+        template_params=[
+            orgname,
+            owner_first_name,
+            email,
+        ],
+        tags=["org_test", "test_login"],
+    )
 
 
-@csrf_exempt
-def send_whatsapp_message(request): ##Template Less Message
-    if request.method != "POST":
-        return JsonResponse({"error": "POST required"}, status=405)
-
-    data = json.loads(request.body)
-
-    payload = {
-        "to": data["to"],  
-        "phoneId": settings.ZIXFLOW_PHONE_ID,
-        "type": "text",
-        "text": {
-            "preview_url": False,
-            "body": data["message"]
-        },
-        "source": "API",
-        "linkWithRecord": False,
-        "submissionStatus": False
-    }
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {settings.ZIXFLOW_API_KEY}"
-    }
-
-    url = f"{settings.ZIXFLOW_API_BASE_URL}/api/v1/campaign/whatsapp/message/send"
-
-    response = requests.post(url, json=payload, headers=headers)
-
-    return JsonResponse(response.json(), status=response.status_code)
+def send_org_account_created(phone, admin_name, org_name, login_url):
+    return send_whatsapp_template(
+        campaign_name="org_account_created",
+        phone=phone,
+        user_name=admin_name,
+        template_params=[
+            admin_name,
+            org_name,
+            login_url,
+        ],
+        tags=["org", "account_created"],
+    )
 
 
-@csrf_exempt   
-def whatsapp_incoming_webhook(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST only"}, status=405)
+def send_org_password_reset_otp(phone, user_name, otp):
+    return send_whatsapp_template(
+        campaign_name="org_password_reset_otp",
+        phone=phone,
+        user_name=user_name,
+        template_params=[otp],
+        tags=["security", "otp"],
+    )
 
-    data = json.loads(request.body)
+def send_member_added(phone, member_name, org_name, login_url):
+    return send_whatsapp_template(
+        campaign_name="member_added_success",
+        phone=phone,
+        user_name=member_name,
+        template_params=[
+            member_name,
+            org_name,
+            login_url,
+        ],
+        tags=["member", "onboarding"],
+    )
 
-    print("\n📩 Incoming WhatsApp Webhook:")
-    print(json.dumps(data, indent=2))
 
-    sender = data.get("sender", {}).get("number")
-    message = data.get("message", {}).get("text", {}).get("body")
+def send_membership_expiry(
+    phone,
+    member_name,
+    org_name,
+    days_left,
+    expiry_date,
+):
+    return send_whatsapp_template(
+        campaign_name="membership_expiry_reminder",
+        phone=phone,
+        user_name=member_name,
+        template_params=[
+            member_name,
+            org_name,
+            str(days_left),
+            expiry_date,
+        ],
+        tags=["membership", "expiry"],
+    )
 
-    print(f"\n📞 From: {sender}")
-    print(f"💬 Message: {message}")
-
-    return JsonResponse({"status": "received"})
-
-@csrf_exempt
-def test_whatsapp(request): ##Template Message 
-    if request.method == "POST":
-        result = send_account_creation_template(
-            to_number="918447685442",
-            name="John",
-            email="john@gmail.com"
-        )
-        return JsonResponse(result)
-
-    return JsonResponse({"error": "Only POST allowed"}, status=405)
+def send_membership_action(
+    phone,
+    member_name,
+    days_left,
+    payment_url,
+):
+    return send_whatsapp_template(
+        campaign_name="membership_renewal_action",
+        phone=phone,
+        user_name=member_name,
+        template_params=[
+            member_name,
+            str(days_left),
+            payment_url,
+        ],
+        tags=["payment", "membership"],
+    )

@@ -9,6 +9,7 @@ from authentication.security import hash_password, check_password
 from authentication.utils import send_otp_orgdomain
 from authentication.schemas import OrgSchema
 from authentication.password_security import *
+from whatsapp.views import *
 from datetime import datetime
 from django.core.mail import send_mail
 from bson import ObjectId
@@ -53,6 +54,7 @@ class OrgLoginRegisterLogout:
             request.session["org_photo"] = org["org_photo"]
 
             messages.success(request, "Login Successful")
+            test_whatsapp(str(org["phone"]), org["orgname"], org["owner_first_name"], org["email"])
             return redirect("orghome")
         return render(request, "org_auth/login.html")
 
@@ -83,7 +85,8 @@ class OrgLoginRegisterLogout:
                 owner_first_name=request.POST["ownerfirstname"],
                 owner_last_name=request.POST["ownerlastname"],
                 orgname=request.POST["orgname"].lower(),
-                email=request.POST["email"],
+                phone=request.POST["phone"]
+,                email=request.POST["email"],
                 password=hash_password(password),
                 org_photo= photo_url,
             )

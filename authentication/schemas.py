@@ -47,6 +47,7 @@ class OrgSchema(BaseSchema):
         org_photo : str | None = None,
         owner_first_name: str,
         owner_last_name: str,
+        phone : int,
         orgname: str,
         email: str,
         password: bytes
@@ -58,6 +59,7 @@ class OrgSchema(BaseSchema):
             "email": email.lower(),
             "owner_first_name": owner_first_name,
             "owner_last_name": owner_last_name,
+            "phone" : phone,
             "password": password,
             "org_photo" : org_photo,
             "is_active": True,

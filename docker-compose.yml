@@ -26,13 +26,8 @@ services:
     restart: always
     depends_on:
       - mongo
-<<<<<<< HEAD
     port:
       - "8001:8000"
-=======
-    expose:
-      - "8000"
->>>>>>> deploy
     env_file:
       - .env
     volumes:
